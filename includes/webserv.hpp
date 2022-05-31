@@ -6,10 +6,11 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 19:10:08 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/05/23 19:11:58 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/05/30 14:52:25 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+#include <sys/socket.h>

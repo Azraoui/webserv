@@ -6,7 +6,7 @@
 #    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/05/23 19:11:14 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/05/25 10:31:29 by ael-azra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,12 +14,12 @@ NAME = webserv
 
 SRC = ./main.cpp
 INC = ./webserv.hpp
-
+FLAG = c++ -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
 
 $(NAME): $(SRC)
-	g++ $(SRC) -o $(NAME)
+	$(FLAG) $(SRC) -o $(NAME)
 
 clean:
 	echo -n
