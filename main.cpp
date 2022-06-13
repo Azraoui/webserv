@@ -6,11 +6,12 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 19:05:46 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/05/31 07:23:32 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/13 15:56:41 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/webserv.hpp"
+#include "./includes/parser/parser.hpp"
 
 using namespace std;
 
@@ -28,8 +29,7 @@ int	main(int ac, char **av)
 {
 	if (ac == 2)
 	{
-		test();
-		(void)av; 
+		parsingConfigFile(av[1]);
 	}
 	else
 		cerr << "Error:\nMissing Configuration file!" << endl;
