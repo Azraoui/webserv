@@ -1,0 +1,22 @@
+	std::map<std::string, std::vector<std::string> >::const_iterator it;
+	for (it = _server->config.begin(); it != _server->config.end(); ++it)
+	{
+		std::cout  << it->first << '\t';
+		size_t n = it->second.size();
+		for (size_t i = 0; i < n; i++)
+		{
+			std::cout << it->second[i] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "path = " << _server->location->path << std::endl;
+	for (it = _server->location->config.begin(); it != _server->location->config.end(); ++it)
+	{
+		std::cout << it->first << '\t';
+		size_t n = it->second.size();
+		for (size_t i = 0; i < n; i++)
+		{
+			std::cout << it->second[i] << " ";
+		}
+		std::cout << std::endl;
+	}
