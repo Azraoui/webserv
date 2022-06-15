@@ -20,3 +20,10 @@
 		}
 		std::cout << std::endl;
 	}
+
+	std::string contents;
+		configFile.seekg(0, std::ios::end);
+		contents.reserve(configFile.tellg());
+		configFile.seekg(0, std::ios::beg);
+		contents.assign((std::istreambuf_iterator<char>(configFile)),
+            std::istreambuf_iterator<char>());

@@ -6,191 +6,116 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/14 19:42:40 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/15 13:33:16 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser/parser.hpp"
 
-// Constructor and deconstructor
-
-ServersConfig::ServersConfig(std::string contents) : _contents(contents)
+void	exitError(std::string const &err)
 {
-
+	std::cerr << err << std::endl;
+	exit(EXIT_FAILURE);
 }
 
-ServersConfig::~ServersConfig()
+std::vector<std::string>	split(std::string const &line, char del = ' ')
 {
-
-}
-
-// Methods
-
-// private:
-
-void	ServersConfig::_block_parsing(Lexer lex, t_token *token, t_server *server)
-{
-	while (token != NULL && (token = lex.get_next_token()) != NULL && token->type != token->TOKEN_RBRACE)
+	std::vector<std::string> ret;
+	std::stringstream ss(line);
+	std::string	tmp;
+	while (std::getline(ss, tmp, del))
 	{
-		if (token->type == token->TOKEN_LBRACE)
-			token = lex.get_next_token();
-		else
-		{
-			std::cerr << "Missing { after server Block\n";
-			exit(1);
-		}
-		while (token->type == token->TOKEN_ID && token->value != "location")
-		{
-			std::string	key;
-			key = token->value;
-			std::vector<std::string> v_args;
-			while ((token = lex.get_next_token()) != NULL && token->type == token->TOKEN_ID)
-			{
-				if (token->value[token->value.length() -1] == '\n')
-				{
-					std::cerr << "Missing ; in end of line\n";
-					exit(1);
-				}
-				v_args.push_back(token->value);
-			}
-			server->config.insert(std::make_pair(key, v_args));
-			if (token->type != token->TOKEN_SEMI)
-			{
-				std::cerr << "Missing ; in end of line\n";
-				exit(1);
-			}
-			token = lex.get_next_token();
-			key.clear();
-			v_args.clear();
-		}
-		if (token->type == token->TOKEN_ID && token->value == "location")
-		{
-			token = lex.get_next_token();
-			if (token->type == token->TOKEN_ID)
-			{
-				t_location vlocation;
-				std::string key;
-				std::vector<std::string> value;
-				vlocation.path = token->value;
-				token = lex.get_next_token();
-				if (token->type == token->TOKEN_LSBRACE)
-				{
-					token = lex.get_next_token();
-					while (token->type == token->TOKEN_ID)
-					{
-						key = token->value;
-						while ((token = lex.get_next_token()) != NULL && token->type == token->TOKEN_ID)
-						{
-							if (token->value[token->value.length() -1] == '\n')
-							{
-								std::cerr << "Missing ; in end of line\n";
-								exit(1);
-							}
-							value.push_back(token->value);
-						}
-						vlocation.config.insert(std::make_pair(key, value));
-						server->location.push_back(vlocation);
-						if (token->type != token->TOKEN_SEMI)
-						{
-							std::cerr << "Missing ; in end of line\n";
-							exit(1);
-						}
-						token = lex.get_next_token();
-						value.clear();
-						key.clear();
-					}
-					if (token->type != token->TOKEN_RSBRACE)
-					{
-						std::cerr << "Missing to close location with ']'\n";
-						exit(1);
-					}
-					token = lex.get_next_token();
-				}
-				else
-				{
-					std::cerr << "Missing [ after path in Location block\n";
-					exit(1);
-				}
-			}
-			else
-			{
-				std::cerr << "Missing path near location\n";
-				exit(1);
-			}
-		}
-		if (token->type != token->TOKEN_RBRACE)
-		{
-			std::cerr << "Missing to close server block with '}'\n";
-			exit(1);
-		}
+		if (tmp == " " || tmp.empty())
+			continue;
+		ret.push_back(tmp);
 	}
+	return ret;
 }
 
-// public:
-
-void	ServersConfig::parsing(void)
+int	getDirective(std::string const &token)
 {
-	Lexer lex = Lexer(_contents);
-	t_token	*token = NULL;
-	t_server	*server = NULL;
-	while ((token = lex.get_next_token()) != NULL)
+	std::array<std::pair<std::string, Directives>, 17> direct =
 	{
-		if (token->type == token->TOKEN_ID && (token->value == "server" || token->value == "server\n"))
-		{
-			_block_parsing(lex, token, server);
-			_serverConf.push_back(*server);
-		}
-		else
-		{
-			std::cerr << "Error\nUnknown Block " << token->value << std::endl;
-			exit(1);
-		}
-	}
-}
-
-void	ServersConfig::print(void)
-{
-			std::cout << "i was here" << std::endl;
-	std::vector<t_server>::iterator it;
-	std::vector<t_location>::iterator vit;
-	std::map<std::string, std::vector<std::string> >::iterator mit;
-	std::vector<std::string>::iterator sit;
-	for (it = _serverConf.begin(); it != _serverConf.end(); ++it)
+        std::make_pair("port", Directives::PORT),
+        std::make_pair("host", Directives::HOST),
+        std::make_pair("server_name", Directives::SERVER_NAME),
+        std::make_pair("error_page", Directives::ERROR_PAGE),
+        std::make_pair("max_body_size", Directives::MAX_FILE_SIZE),
+        std::make_pair("time_out", Directives::TIME_OUT),
+        std::make_pair("location", Directives::LOCATION),
+        std::make_pair("return", Directives::REDIRECT),
+        std::make_pair("cgi", Directives::CGI),
+        std::make_pair("root", Directives::ROOT),
+        std::make_pair("allowed_method", Directives::ALLOWED_METHODS),
+        std::make_pair("index", Directives::INDEX),
+        std::make_pair("auto_index", Directives::AUTO_INDEX),
+        std::make_pair("auth_basic", Directives::AUTH_BASIC),
+        std::make_pair("upload_store", Directives::UPLOAD),
+        std::make_pair("]", Directives::LOCATION_END),
+        std::make_pair("}", Directives::SERVER_END),
+	};
+	for (size_t i ; i < direct.size(); i++)
 	{
-		for (mit = it->config.begin(); mit != it->config.end(); ++mit)
-		{
-			std::cout << "key = " << mit->first << '\t';
-		}
+		if (token == direct[0].first)
+			return direct[1].second;
 	}
+	return INVALID_DIRECTIVE;
 }
-// Functions
 
-int	parsingConfigFile(std::string fileName)
+std::vector<ServerConfig> parsingConfigFile(std::string const &fileName)
 {
-	std::ifstream configFile(fileName);
-
+	std::ifstream 				configFile(fileName);
+	std::vector<ServerConfig>	_serverConfig;
+	std::stack<std::string>		curlyBracket;
+	std::stack<std::string>		squareBracket;
+	bool	insideServer = false;
+	std::string					line;
+	int	directive;
 	if (configFile)
 	{
-		std::string contents;
-		configFile.seekg(0, std::ios::end);   
-		contents.reserve(configFile.tellg());
-		configFile.seekg(0, std::ios::beg);
-		contents.assign((std::istreambuf_iterator<char>(configFile)),
-            std::istreambuf_iterator<char>());
+		while (std::getline(configFile, line))
+		{
+			if (line.empty())
+				continue;
+			std::vector<std::string> tokens = split(line);
+			if (tokens.size())
+			{
+				directive = getDirective(tokens[0]);
+				if (tokens[0] == "server")
+				{
+					if (!curlyBracket.empty() || !squareBracket.empty())
+						exitError("Syntax Error in config file");
+					if (tokens.size() == 2 && tokens[1] == "{")
+					{
+						insideServer = true;
+						curlyBracket.push("{");
+					}
+					else
+						exitError("Missing '{' near " + tokens[0]);
+				}
+				else if (!insideServer)
+					exitError("Unknown block < " + tokens[0] + " >");
+				else
+				{
+					switch (directive)
+					{
+					case Directives:PORT :
+						/* code */
+						break;
+					
+					default:
+						break;
+					}
+				}
+			}
+		}
 
 		//------------------------------------
-		ServersConfig s = ServersConfig(contents);
-		s.parsing();
-		//  s.print();
-	// 		Lexer lex = Lexer(contents);
-	// t_token *token = NULL;
-	// 	while ((token = lex.get_next_token()) != NULL)
-	// 	{
-	// 		std::cout << "type = " << token->type << " " << " value = {" << token->value<<"}" << std::endl;
-	// 	}
+
 		configFile.close();
 	}
 	else
-		std::cout << "Error\nFile doesn't exist" << std::endl;
-	return (0);
+		exitError("Error\nFile doesn't exist");
+
+	return _serverConfig;
 }
