@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/16 19:35:30 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/16 21:37:01 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,12 @@ void	getReturn(std::vector<std::string> &tokens, bool const &insideLocation, std
 		_serverConfig[i_S]._locations[i_L]._redirection.first = tokens[2];
 	}
 	else
-		exitError("error find <" + tokens[0] + "> inside server block");
+	{
+		if (!_serverConfig[i_S]._redirection.first.empty())
+			exitError("error to many <" + tokens[0] + "> inside server block");
+		_serverConfig[i_S]._redirection.first = tokens[1];
+		_serverConfig[i_S]._redirection.first = tokens[2];
+	}
 }
 
 void	getCGI(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
@@ -220,7 +225,11 @@ void	getCGI(std::vector<std::string> &tokens, bool const &insideLocation, std::v
 		_serverConfig[i_S]._locations[i_L]._cgi.assign(tokens.begin() + 1, tokens.end());
 	}
 	else
-		exitError("error find <" + tokens[0] + "> inside server block");
+	{
+		if (!_serverConfig[i_S]._cgi.empty())
+			exitError("error to many <" + tokens[0] + "> inside server block");
+		_serverConfig[i_S]._cgi.assign(tokens.begin() + 1, tokens.end());
+	}
 }
 
 void	getUploadPath(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
