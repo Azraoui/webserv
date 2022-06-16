@@ -6,16 +6,39 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/15 13:33:16 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/16 19:35:30 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser/parser.hpp"
 
+void	printVserver(std::vector<Vserver> const &v)
+{
+	for (size_t i = 0; i < v.size(); i++)
+	{
+		std::cout << "\n\nserver: " << i << " -----------------\n\n";
+		
+		for (std::set<std::pair<std::string, int> >::iterator j = v[i]._listen.begin(); j != v[i]._listen.end(); ++j)
+			std::cout << "Host = " << j->first << "  Port = " << j->second << std::endl;
+
+		std::cout << "Allowd_methods = ";
+		// for (std::set<std::string>::iterator j = v[i]._allowed_methods.begin(); j != v[i]._allowed_methods.end(); ++j)
+		// 	std::cout << ""
+	}
+}
+
 void	exitError(std::string const &err)
 {
 	std::cerr << err << std::endl;
 	exit(EXIT_FAILURE);
+}
+
+void	trim(std::string *s)
+{
+	for (size_t i = 0; i < s->length() && (*s)[i] == '\t'; i++)
+		s->erase(s->begin() + i--);
+	for (size_t i = s->length(); i >= 0 && (*s)[i] == '\t'; --i)
+		s->erase(s->begin() + i++);
 }
 
 std::vector<std::string>	split(std::string const &line, char del = ' ')
@@ -25,6 +48,7 @@ std::vector<std::string>	split(std::string const &line, char del = ' ')
 	std::string	tmp;
 	while (std::getline(ss, tmp, del))
 	{
+		trim(&tmp);
 		if (tmp == " " || tmp.empty())
 			continue;
 		ret.push_back(tmp);
@@ -32,45 +56,196 @@ std::vector<std::string>	split(std::string const &line, char del = ' ')
 	return ret;
 }
 
-int	getDirective(std::string const &token)
+void	getPortAndHost(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
 {
-	std::array<std::pair<std::string, Directives>, 17> direct =
+	if (tokens.size() != 3)
+		exitError("error to many argument near directive: <" + tokens[0] + ">");
+	if (!insideLocation)
 	{
-        std::make_pair("port", Directives::PORT),
-        std::make_pair("host", Directives::HOST),
-        std::make_pair("server_name", Directives::SERVER_NAME),
-        std::make_pair("error_page", Directives::ERROR_PAGE),
-        std::make_pair("max_body_size", Directives::MAX_FILE_SIZE),
-        std::make_pair("time_out", Directives::TIME_OUT),
-        std::make_pair("location", Directives::LOCATION),
-        std::make_pair("return", Directives::REDIRECT),
-        std::make_pair("cgi", Directives::CGI),
-        std::make_pair("root", Directives::ROOT),
-        std::make_pair("allowed_method", Directives::ALLOWED_METHODS),
-        std::make_pair("index", Directives::INDEX),
-        std::make_pair("auto_index", Directives::AUTO_INDEX),
-        std::make_pair("auth_basic", Directives::AUTH_BASIC),
-        std::make_pair("upload_store", Directives::UPLOAD),
-        std::make_pair("]", Directives::LOCATION_END),
-        std::make_pair("}", Directives::SERVER_END),
-	};
-	for (size_t i ; i < direct.size(); i++)
-	{
-		if (token == direct[0].first)
-			return direct[1].second;
+		if (tokens[1] == "localhost")
+		{
+			tokens[1].clear();
+			tokens[1] = "127.0.0.1";
+		}
+		int port = atoi(tokens[2].c_str());
+		if (port <= 0)
+			exitError("error port doesn't match the correct format");
+		_serverConfig[i_S]._listen.insert(std::make_pair(tokens[1], port));
 	}
-	return INVALID_DIRECTIVE;
+	else
+		exitError("error find <"+ tokens[0] + "> inside location block");
 }
 
-std::vector<ServerConfig> parsingConfigFile(std::string const &fileName)
+void	getServerName(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
+{
+	if (tokens.size() <= 1)
+		exitError("error near direction <" + tokens[0] + ">");
+	if (insideLocation)
+		exitError("error find <"+ tokens[0] + "> inside location block");
+	if (_serverConfig[i_S]._serverNames.empty())
+		_serverConfig[i_S]._serverNames.assign(tokens.begin() + 1, tokens.end());
+	else
+		exitError("error to many sarever_name");
+}
+
+void	getErrorPage(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
+{
+	if (tokens.size() != 3)
+		exitError("error near direction <" + tokens[0] + ">");
+	if (insideLocation)
+		exitError("error find <" + tokens[0] + "> inside location block");
+	else
+		_serverConfig[i_S]._errorPage.insert(std::make_pair(tokens[1], tokens[2]));
+}
+
+void	getMaxBodySize(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
+{
+	if (tokens.size() != 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (insideLocation)
+		exitError("error find <" + tokens[0] + "> inside location");
+	else
+		_serverConfig[i_S]._maxBodySize = tokens[1];
+}
+
+void	getRoot(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() != 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (!insideLocation)
+	{
+		if (_serverConfig[i_S]._rootPath.empty())
+			_serverConfig[i_S]._rootPath = tokens[1];
+		else
+			exitError("error to many <" + tokens[0] + "> in server block");
+	}
+	else
+	{
+		if (_serverConfig[i_S]._locations[i_L]._rootPath.empty())
+			_serverConfig[i_S]._locations[i_L]._rootPath = tokens[1];
+		else
+			exitError("error to many <" + tokens[0] + "> in location block");
+	}
+}
+
+void	getAllowedMethods(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() < 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (!insideLocation)
+	{
+		if (_serverConfig[i_S]._allowed_methods.empty())
+		{
+			for (size_t i = 1; i < tokens.size(); i++)
+				_serverConfig[i_S]._allowed_methods.insert(tokens[i]);
+		}
+		else
+			exitError("error to many <" + tokens[0] + "> inside server block");
+	}
+	else
+	{
+		if (_serverConfig[i_S]._locations[i_L]._allowed_methods.empty())
+		{
+			for (size_t i = 1; i < tokens.size(); i++)
+				_serverConfig[i_S]._locations[i_L]._allowed_methods.insert(tokens[i]);
+		}
+		else
+			exitError("error to many <" + tokens[0] + "> inside location block");
+	}
+}
+
+void	getIndex(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() < 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (!insideLocation)
+	{
+		if (_serverConfig[i_S]._index.empty())
+			_serverConfig[i_S]._index.assign(tokens.begin() + 1, tokens.end());
+		else
+			exitError("error to many <" + tokens[0] + "> inside server block");
+	}
+	else
+	{
+		if (_serverConfig[i_S]._locations[i_L]._index.empty())
+			_serverConfig[i_S]._locations[i_L]._index.assign(tokens.begin() + 1, tokens.end());
+		else
+			exitError("error to many <" + tokens[0] + "> inside location block");
+	}
+}
+
+void	getAutoIndex(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() != 2 || (tokens[1] != "on" && tokens[1] != "off"))
+		exitError("error near directive <" + tokens[0] + ">");
+	if (!insideLocation)
+	{
+		if (_serverConfig[i_S]._autoindex.empty())
+			_serverConfig[i_S]._autoindex = tokens[1];
+		else
+			exitError("error to many <" + tokens[0] + "> inside server block");
+	}
+	else
+	{
+		if (_serverConfig[i_S]._locations[i_L]._autoindex.empty())
+			_serverConfig[i_S]._locations[i_L]._autoindex = tokens[1];
+		else
+			exitError("error to many <" + tokens[0] + "> inside location block");
+	}
+}
+
+void	getReturn(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() != 3)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (insideLocation)
+	{
+		if (!_serverConfig[i_S]._locations[i_L]._redirection.first.empty())
+			exitError("error to many <" + tokens[0] + "> inside location block");
+		_serverConfig[i_S]._locations[i_L]._redirection.first = tokens[1];
+		_serverConfig[i_S]._locations[i_L]._redirection.first = tokens[2];
+	}
+	else
+		exitError("error find <" + tokens[0] + "> inside server block");
+}
+
+void	getCGI(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() < 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (insideLocation)
+	{
+		if (!_serverConfig[i_S]._locations[i_L]._cgi.empty())
+			exitError("error to many <" + tokens[0] + "> inside location block");
+		_serverConfig[i_S]._locations[i_L]._cgi.assign(tokens.begin() + 1, tokens.end());
+	}
+	else
+		exitError("error find <" + tokens[0] + "> inside server block");
+}
+
+void	getUploadPath(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
+{
+	if (tokens.size() != 2)
+		exitError("error near directive <" + tokens[0] + ">");
+	if (insideLocation)
+	{
+		if (!_serverConfig[i_S]._locations[i_L]._uploadPath.empty())
+			exitError("error to many <" + tokens[0] + "> inside location block");
+		_serverConfig[i_S]._locations[i_L]._uploadPath = tokens[1];
+	}
+	else
+		exitError("error find <" + tokens[0] + "> inside server block");
+}
+
+std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 {
 	std::ifstream 				configFile(fileName);
-	std::vector<ServerConfig>	_serverConfig;
-	std::stack<std::string>		curlyBracket;
-	std::stack<std::string>		squareBracket;
-	bool	insideServer = false;
+	std::vector<Vserver>		_serverConfig;
+	std::stack<std::string>		brackets;
+	bool						insideServer = false;
+	bool						insideLocation = false;
 	std::string					line;
-	int	directive;
+	int	index_S = -1, index_L = -1;
 	if (configFile)
 	{
 		while (std::getline(configFile, line))
@@ -80,38 +255,80 @@ std::vector<ServerConfig> parsingConfigFile(std::string const &fileName)
 			std::vector<std::string> tokens = split(line);
 			if (tokens.size())
 			{
-				directive = getDirective(tokens[0]);
-				if (tokens[0] == "server")
+				if (tokens[0] == "server" && !insideServer)
 				{
-					if (!curlyBracket.empty() || !squareBracket.empty())
-						exitError("Syntax Error in config file");
+					if (!brackets.empty())
+						exitError("Syntax Error <" + fileName + ">");
 					if (tokens.size() == 2 && tokens[1] == "{")
 					{
 						insideServer = true;
-						curlyBracket.push("{");
+						brackets.push("{");
+						_serverConfig.push_back(Vserver());
+						index_S++;
+						index_L = -1;
 					}
 					else
 						exitError("Missing '{' near " + tokens[0]);
 				}
-				else if (!insideServer)
-					exitError("Unknown block < " + tokens[0] + " >");
-				else
+				else if (insideServer)
 				{
-					switch (directive)
+					if (!strcmp(tokens[0].c_str(), "listen"))
+						getPortAndHost(tokens, insideLocation, _serverConfig, index_S);
+					else if (!strcmp(tokens[0].c_str(), "root"))
+						getRoot(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "allowed_methods"))
+						getAllowedMethods(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "server_name"))
+						getServerName(tokens, insideLocation, _serverConfig, index_S);
+					else if (!strcmp(tokens[0].c_str(), "autoindex"))
+						getAutoIndex(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "index"))
+						getIndex(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "error_page"))
+						getErrorPage(tokens, insideLocation, _serverConfig, index_S);
+					else if (!strcmp(tokens[0].c_str(), "max_body_size"))
+						getMaxBodySize(tokens, insideLocation, _serverConfig, index_S);
+					else if (!strcmp(tokens[0].c_str(), "return"))
+						getReturn(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "cgi"))
+						getCGI(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "upload_path"))
+						getUploadPath(tokens, insideLocation, _serverConfig, index_S, index_L);
+					else if (!strcmp(tokens[0].c_str(), "location"))
 					{
-					case Directives:PORT :
-						/* code */
-						break;
-					
-					default:
-						break;
+						if (tokens[2] != "[" && tokens.size() != 3)
+							exitError("Syntax error in <" + tokens[0] + ">");
+						insideLocation = true;
+						brackets.push("[");
+						index_L++;
+						_serverConfig[index_S]._locations.push_back(Vserver());
+						_serverConfig[index_S]._locations[index_L]._locationPath = tokens[1];
 					}
+					else if (!strcmp(tokens[0].c_str(), "]"))
+					{
+						if (tokens.size() != 1 || brackets.top() != "[")
+							exitError("Syntax error in <" + tokens[0] + ">");
+						brackets.pop();
+						insideLocation = false;
+					}
+					else if (!strcmp(tokens[0].c_str(), "}"))
+					{
+						if (tokens.size() != 1 || brackets.top() != "{")
+							exitError("Syntax error in <" + tokens[0] + ">");
+						brackets.pop();
+						insideServer = false;
+					}
+					else
+						exitError("Syntax error in <" + tokens[0] + ">");
 				}
 			}
 		}
+		if (!brackets.empty())
+			exitError("Syntax Error in <" + fileName + ">");
 
 		//------------------------------------
 
+		printVserver(_serverConfig);
 		configFile.close();
 	}
 	else

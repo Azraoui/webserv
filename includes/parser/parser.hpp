@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 15:55:45 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/15 13:26:07 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/16 18:46:08 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,47 +25,28 @@
 
 #define INVALID_DIRECTIVE -2
 
-enum	Directives
+struct Vserver
 {
-	PORT,
-	HOST,
-	SERVER_NAME,
-	ERROR_PAGE,
-	MAX_FILE_SIZE,
-	TIME_OUT,
-	LOCATION,
-	REDIRECT,
-	CGI,
-	ROOT,
-	ALLOWED_METHODS,
-	INDEX,
-	AUTO_INDEX,
-	AUTH_BASIC,
-	UPLOAD,
-	LOCATION_END,
-	SERVER_END,
+        std::vector<std::string>                            _serverNames;
+        std::vector<Vserver>                                _locations;
+
+        std::string                                         _locationPath;
+        std::string                                         _rootPath;
+        std::string                                         _autoindex;
+        std::string                                         _maxBodySize;
+        std::string                                         _uploadPath;
+		
+        std::set<std::pair<std::string, std::string> >      _errorPage;
+        std::pair<std::string, std::string>                 _redirection;
+        std::vector<std::string>                            _cgi;
+        std::vector<std::string>                            _index;
+        std::set<std::string>                           	_allowed_methods;
+
+        // Socket                                              _socket;
+		std::set<std::pair<std::string, int> >				_listen;
+        // size_t                                              _port;
+        // std::string                                         _host;
 };
 
-struct	ServerConfig {
-
-    std::string _port;
-    std::string _host;
-    std::string _server_name;
-    std::string _max_file_size;
-    std::string _time_out;
-    std::string _cgi;
-    std::string _root;
-    std::string _auto_index;
-    std::string _loc_path;
-    std::string _upload_store;
-
-    std::map<std::string, std::string> _error_page;
-    std::pair<std::string, std::string> _redirect;
-    std::vector<std::string> _index;
-    std::set<std::string> _allowed_method;
-
-    std::vector<ServerConfig> _location;
-};
-
-void	exitError(std::string const &err);
-std::vector<ServerConfig>	parsingConfigFile(std::string const &fileName);
+void					exitError(std::string const &err);
+std::vector<Vserver>	parsingConfigFile(std::string const &fileName);
