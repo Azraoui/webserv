@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 19:05:46 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/13 15:56:41 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/16 21:41:35 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	test(void)
 
 	server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if(server_fd < 0)
-		perror("cannot create socket");
+		perror("can't create socket");
 	cout << server_fd << endl;
 }
 

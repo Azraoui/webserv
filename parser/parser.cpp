@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/16 21:37:01 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/21 19:01:33 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,19 @@ void	printVserver(std::vector<Vserver> const &v)
 {
 	for (size_t i = 0; i < v.size(); i++)
 	{
-		std::cout << "\n\nserver: " << i << " -----------------\n\n";
+		std::cout << "\n\nserver: ------------------- " << i << " -----------------\n\n";
 		
 		for (std::set<std::pair<std::string, int> >::iterator j = v[i]._listen.begin(); j != v[i]._listen.end(); ++j)
 			std::cout << "Host = " << j->first << "  Port = " << j->second << std::endl;
 
 		std::cout << "Allowd_methods = ";
-		// for (std::set<std::string>::iterator j = v[i]._allowed_methods.begin(); j != v[i]._allowed_methods.end(); ++j)
-		// 	std::cout << ""
+		for (std::set<std::string>::iterator j = v[i]._allowed_methods.begin(); j != v[i]._allowed_methods.end(); ++j)
+			std::cout << *j << " ";
+		std::cout << std::endl;
+		std::cout << "redirection = " << v[i]._redirection.first << " "<< v[i]._redirection.second << std::endl;
+		std::cout << "error_page = " << std::endl;
+		for (std::set<std::pair<std::string, std::string> >::iterator j = v[i]._errorPage.begin(); j != v[i]._errorPage.end(); ++j)
+			std::cout << j->first << " " << j->second << std::cout << std::endl;
 	}
 }
 
@@ -203,14 +208,14 @@ void	getReturn(std::vector<std::string> &tokens, bool const &insideLocation, std
 		if (!_serverConfig[i_S]._locations[i_L]._redirection.first.empty())
 			exitError("error to many <" + tokens[0] + "> inside location block");
 		_serverConfig[i_S]._locations[i_L]._redirection.first = tokens[1];
-		_serverConfig[i_S]._locations[i_L]._redirection.first = tokens[2];
+		_serverConfig[i_S]._locations[i_L]._redirection.second = tokens[2];
 	}
 	else
 	{
 		if (!_serverConfig[i_S]._redirection.first.empty())
 			exitError("error to many <" + tokens[0] + "> inside server block");
 		_serverConfig[i_S]._redirection.first = tokens[1];
-		_serverConfig[i_S]._redirection.first = tokens[2];
+		_serverConfig[i_S]._redirection.second = tokens[2];
 	}
 }
 
@@ -310,7 +315,7 @@ std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 						insideLocation = true;
 						brackets.push("[");
 						index_L++;
-						_serverConfig[index_S]._locations.push_back(Vserver());
+						_serverConfig[index_S]._locations.push_back(Location());
 						_serverConfig[index_S]._locations[index_L]._locationPath = tokens[1];
 					}
 					else if (!strcmp(tokens[0].c_str(), "]"))
