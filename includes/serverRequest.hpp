@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 12:45:17 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 18:20:47 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ class ServerRequest
 		void	set_maxFd(int fd);
 		int		get_maxFd(void);
 		bool	selectFd(void);
+		int		fd_isset(int socketFd, std::string s);
 
 };

@@ -15,7 +15,9 @@ class Socket
 {
     private:
         int                 _socket;
-        struct sockaddr_in  _addr;
+        int                 _clientFd;
+        struct sockaddr_in  _addr, _clientAddr;
+        socklen_t           _clientLent;
     public:
         
         int & getSocket() {
@@ -25,6 +27,9 @@ class Socket
         struct sockaddr_in & getAddr() {
             return _addr;
         };
+        int getClientFd(void){
+            return _clientFd;
+        }
 
         int initSocket(std::string &host, size_t &port) {
             // memset space for _addr
@@ -67,6 +72,8 @@ class Socket
             }
             return (0);
         };
+
+        Socket    accept_conncetion(void);
 
         Socket() : _socket(-1), _addr() {};
         ~Socket() {};

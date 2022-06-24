@@ -20,10 +20,13 @@ class HttpServer
 		std::vector<Vserver >           _servers;
 		std::vector<int>				_open_ports;
 		std::vector<Socket>				_serverSock;
+		std::vector<Socket>				_clientsSock;
 		ServerRequest					_selectUtility;
 
 		//methods
 		void	_loadServers(void);
+		bool	_readRequest(int socketFd);
+		void	_acceptRequest(int position);
 
 	public:
 		HttpServer(const std::vector<Vserver> &servers);
