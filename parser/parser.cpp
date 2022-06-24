@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 10:49:09 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 22:10:34 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,22 @@ void	getUploadPath(std::vector<std::string> &tokens, bool const &insideLocation,
 		exitError("error find <" + tokens[0] + "> inside server block");
 }
 
+std::vector<Vserver>	traitVserver(std::vector<Vserver> const &serverConfig)
+{
+	std::vector<Vserver>	ret;
+
+	for (size_t i = 0; i < serverConfig.size(); i++)
+	{
+		for (std::set<std::pair<std::string, int> >::iterator j = serverConfig[i]._listen.begin(); j != serverConfig[i]._listen.end(); ++j)
+		{
+			ret.push_back(serverConfig[i]);
+			ret.back()._host = j->first;
+			ret.back()._port = j->second;
+		}
+	}
+	return ret;
+}
+
 std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 {
 	std::ifstream 				configFile(fileName);
@@ -341,12 +357,11 @@ std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 			exitError("Syntax Error in <" + fileName + ">");
 
 		//------------------------------------
-
 		// printVserver(_serverConfig);
 		configFile.close();
 	}
 	else
 		exitError("Error\nFile doesn't exist");
 
-	return _serverConfig;
+	return traitVserver(_serverConfig);
 }

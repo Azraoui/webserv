@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 18:38:55 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 23:26:53 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,14 @@ void    HttpServer::runServers(void)
         {
             // accept requests
             if (_selectUtility.fd_isset(_serverSock[i].getSocket(), "read"))
+            {
                 this->_acceptRequest(i);
+                std::cout << "i was in acceptRequest\n";
+            }
         }
         for (size_t i = 0; i < _clientsSock.size(); i++)
         {
+            _selectUtility.set_maxFd(_clientsSock[i].getClientFd());
             // read
             if (_selectUtility.fd_isset(_clientsSock[i].getSocket(), "read"))
             {
@@ -70,11 +74,13 @@ void    HttpServer::runServers(void)
                 // reponse here
             }
         }
+        std::cout << "_clientsSock.size() = " << _clientsSock.size() << std::endl;
     }
 }
 
 bool	HttpServer::_readRequest(int socketFd)
 {
+    std::cout << "i was in readRequest\n";
     if (socketFd)
         return true;
     return false;

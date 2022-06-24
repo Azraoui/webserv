@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 18:20:47 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 23:12:28 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 class ServerRequest
 {
 	private:
-		fd_set	_read_fd;
 		fd_set	_write_fd;
+		fd_set	_read_fd;
 		int		_max_fd;
 
 	public:
