@@ -2,8 +2,8 @@
 #define HTTPSERVER_HPP
 
 
-# include "../includes/parser.hpp" // AbdAllah Vserver struct
-
+# include "./parser.hpp" // AbdAllah Vserver struct
+# include "./socket.hpp"
 
 # include <string>
 # include <vector>
@@ -17,14 +17,18 @@ class HttpServer
 {
 	private:
 		std::vector<Vserver >           _servers;
+		std::vector<int>				_open_ports;
+		std::vector<Socket>				_serverSock;
+
+		//methods
+		void	_loadServers(void);
 
 	public:
 		HttpServer(const std::vector<Vserver> &servers);
 		~HttpServer();
 
 		// methods
-		void	loadServers(void);
-
+		void	_runServers(void);
 };
 
 #endif

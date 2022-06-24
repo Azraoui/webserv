@@ -6,29 +6,29 @@
 #    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/06/24 10:57:31 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/06/24 11:31:05 by ael-azra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
 SRC = ./main.cpp ./parser/parser.cpp \
-		./networking/httpServer.cpp
+		./networking/httpServer.cpp ./networking/socket.cpp
 
-INC = ./includes/parser.hpp ./includes/httpServer.hpp
+INC = ./includes/parser.hpp ./includes/httpServer.hpp ./includes/socket.hpp
 
 FLAG = c++ -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
 
 $(NAME): $(SRC) $(INC)
-	$(FLAG) $(SRC) -o $(NAME)
+	@$(FLAG) $(SRC) -o $(NAME)
 
 clean:
-	echo -n
+	@echo -n
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 
