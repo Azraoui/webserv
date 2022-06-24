@@ -6,22 +6,22 @@
 #    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/06/14 15:55:24 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/06/24 10:57:31 by ael-azra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
 SRC = ./main.cpp ./parser/parser.cpp \
-		./parser/lexer.cpp ./parser/token.cpp
+		./networking/httpServer.cpp
 
-INC = ./webserv.hpp ./parser/parser.hpp
+INC = ./includes/parser.hpp ./includes/httpServer.hpp
 
 FLAG = c++ -Wall -Wextra -Werror -std=c++98
 
 all: $(NAME)
 
-$(NAME): $(SRC)
+$(NAME): $(SRC) $(INC)
 	$(FLAG) $(SRC) -o $(NAME)
 
 clean:

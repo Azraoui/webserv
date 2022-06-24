@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 15:55:45 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/17 18:27:18 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 10:46:51 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ struct Vserver
 		std::vector<std::string>                            _index;
 		std::set<std::string>                           	_allowed_methods;
 
-		// Socket                                              _socket;
 		std::set<std::pair<std::string, int> >				_listen;
 		// size_t                                              _port;
 		// std::string                                         _host;

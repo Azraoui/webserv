@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.hpp                                          :+:      :+:    :+:   */
+/*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/13 11:19:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/15 11:12:31 by ael-azra         ###   ########.fr       */
+/*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
+/*   Updated: 2022/06/24 10:59:58 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "../includes/httpServer.hpp"
 
-#include <iostream>
+HttpServer::HttpServer(const std::vector<Vserver> &servers) : _servers(servers) {
+    loadServers();
+}
 
-typedef struct s_token
+HttpServer::~HttpServer(){
+
+}
+
+// methods
+
+void	HttpServer::loadServers(void)
 {
-	enum types
-	{
-		TOKEN_ID,
-		TOKEN_SEMI,
-		TOKEN_LBRACE,
-		TOKEN_RBRACE,
-		TOKEN_LSBRACE,
-		TOKEN_RSBRACE,
-		TOKEN_EOF
-	} type;
-	std::string value;
-} t_token;
-
-t_token	*init_token(enum s_token::types typ, std::string value);
+	
+};

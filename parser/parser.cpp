@@ -6,11 +6,11 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/21 19:01:33 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 10:49:09 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/parser/parser.hpp"
+#include "../includes/parser.hpp"
 
 void	printVserver(std::vector<Vserver> const &v)
 {
@@ -28,7 +28,7 @@ void	printVserver(std::vector<Vserver> const &v)
 		std::cout << "redirection = " << v[i]._redirection.first << " "<< v[i]._redirection.second << std::endl;
 		std::cout << "error_page = " << std::endl;
 		for (std::set<std::pair<std::string, std::string> >::iterator j = v[i]._errorPage.begin(); j != v[i]._errorPage.end(); ++j)
-			std::cout << j->first << " " << j->second << std::cout << std::endl;
+			std::cout << j->first << " " << j->second << std::endl;
 	}
 }
 
@@ -342,7 +342,7 @@ std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 
 		//------------------------------------
 
-		printVserver(_serverConfig);
+		// printVserver(_serverConfig);
 		configFile.close();
 	}
 	else
