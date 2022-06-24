@@ -4,6 +4,7 @@
 
 # include "./parser.hpp" // AbdAllah Vserver struct
 # include "./socket.hpp"
+# include "./serverRequest.hpp"
 
 # include <string>
 # include <vector>
@@ -19,6 +20,7 @@ class HttpServer
 		std::vector<Vserver >           _servers;
 		std::vector<int>				_open_ports;
 		std::vector<Socket>				_serverSock;
+		ServerRequest					_selectUtility;
 
 		//methods
 		void	_loadServers(void);
@@ -28,7 +30,7 @@ class HttpServer
 		~HttpServer();
 
 		// methods
-		void	_runServers(void);
+		void	runServers(void);
 };
 
 #endif

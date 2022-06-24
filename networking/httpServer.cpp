@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 11:30:40 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/24 15:16:23 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,23 @@ void	HttpServer::_loadServers(void)
     }
 };
 
-void    HttpServer::_runServers(void)
+void    HttpServer::runServers(void)
 {
-    
+    _selectUtility.clear();
+    for (size_t i = 0; i < _serverSock.size(); i++)
+    {
+        _selectUtility.set_fd(_serverSock[i].getSocket());
+        _selectUtility.set_maxFd(_serverSock[i].getSocket());
+    }
+    while (true) // main loop
+    {
+        if (!_selectUtility.selectFd())
+            continue;
+        for (size_t i = 0; i < _serverSock.size(); i++)
+        {
+            // read
+
+            // reponse
+        }
+    }
 }
