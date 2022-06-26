@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-class serverRequest
+class ReadRequest
 {
     private:
         std::string                         _host;
@@ -105,9 +105,6 @@ class serverRequest
             return _isRequestFinished;
         };
 
-        serverRequest() {
-
-        };
-
-        ~serverRequest() {};
+        ReadRequest();
+        ~ReadRequest();
 };
