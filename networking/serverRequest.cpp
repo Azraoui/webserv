@@ -6,13 +6,13 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 16:20:01 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 18:37:40 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/serverRequest.hpp"
 
-ServerRequest::ServerRequest() : _max_fd(0){
+ServerRequest::ServerRequest() : _max_fd(-1){
 	
 }
 
@@ -54,12 +54,7 @@ void	ServerRequest::setReadAndWriteFD(void)
 
 bool	ServerRequest::selectFd(void)
 {
-	timeval tmv;
-	fd_set  err;
-
-	tmv.tv_sec = 30;
-	tmv.tv_usec = 0;
-	if (select(_max_fd, &_read_fd, &_write_fd, &err, &tmv) <= 0)
+	if (select(_max_fd + 1, &_read_fd, &_write_fd, NULL, NULL) <= 0)
 		return false;
 	return true;
 }
@@ -71,4 +66,27 @@ int		ServerRequest::fd_isset(int socketFd, std::string s) // cheack if fd is rea
 	else if (s == "write")
 		return (FD_ISSET(socketFd, &_write_fd));
 	return 0;
+}
+
+void	ServerRequest::insertClient(int fd)
+{
+	_readRequest.insert(std::make_pair(fd, ReadRequest()));
+}
+
+bool	ServerRequest::receiveData(int fd)
+{
+	char *buffer = new char[BUFFER_SIZE];
+	ssize_t recv_ret;
+
+	bzero(buffer, BUFFER_SIZE);
+	recv_ret = recv(fd, buffer, BUFFER_SIZE, 0);
+	if (recv_ret <= 0)
+	{
+		_readRequest.erase(fd);
+		return false;
+	}
+	std::string	temp(buffer);
+	std::cout << temp << std::endl;
+	delete [] buffer;
+	return true;
 }

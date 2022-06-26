@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 16:42:47 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 17:03:48 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include <map>
 #include "./readRequest.hpp"
 
+#define BUFFER_SIZE 1024
 
 class ServerRequest
 {
@@ -45,4 +46,6 @@ class ServerRequest
 		bool	selectFd(void);
 		int		fd_isset(int socketFd, std::string s);
 		void	setReadAndWriteFD(void);
+		void	insertClient(int fd);
+		bool	receiveData(int fd);
 };

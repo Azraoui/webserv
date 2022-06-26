@@ -19,7 +19,7 @@ class ReadRequest
         size_t                              _bodyFileLength;
         bool                                _isRequestFinished;
         size_t                              _statusCode;
-     
+
     public:
         std::string &getHost() {
             return _host;

@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 16:18:23 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 18:36:16 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,13 @@ void    HttpServer::runServers(void)
         for (size_t i = 0; i < _clientsSock.size(); i++)
         {
             // read
-            if (_selectUtility.fd_isset(_clientsSock[i].getSocket(), "read"))
+            if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "read"))
             {
-                if (!this->_readRequest(_clientsSock[i].getSocket()))
+                if (!this->_readRequest(_clientsSock[i].getClientFd()))
                     continue;
             }
             // reponse
-            if (_selectUtility.fd_isset(_clientsSock[i].getSocket(), "write"))
+            if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
                 // reponse here
             }
@@ -74,18 +74,18 @@ void    HttpServer::runServers(void)
     }
 }
 
-bool	HttpServer::_readRequest(int socketFd)
+bool	HttpServer::_readRequest(int clientFd)
 {
-    if (socketFd)
-        return true;
-    return false;
+    if (!_selectUtility.receiveData(clientFd))
+        return false;
+    return true;
 }
 
 void	HttpServer::_acceptRequest(int position)
 {
     Socket tmp;
     int    option_value;
-    
+
     tmp = _serverSock[position].accept_conncetion();
     if (tmp.getClientFd() < 0)
         return ;
@@ -96,4 +96,5 @@ void	HttpServer::_acceptRequest(int position)
     _clientsSock.push_back(tmp);
     _selectUtility.set_fd(tmp.getClientFd());
     _selectUtility.set_maxFd(tmp.getClientFd());
+    _selectUtility.insertClient(tmp.getClientFd());
 }

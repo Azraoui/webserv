@@ -25,7 +25,7 @@ class HttpServer
 
 		//methods
 		void	_loadServers(void);
-		bool	_readRequest(int socketFd);
+		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
 
 	public:
