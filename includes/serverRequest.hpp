@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 23:34:10 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 16:32:21 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,17 @@
 #include <sys/select.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <map>
 
 
 class ServerRequest
 {
 	private:
-		fd_set	_write_fd;
-		fd_set	_read_fd;
-		fd_set	_temp_writeFd;
-		fd_set	_temp_readFd;
-		int		_max_fd;
+		fd_set						_master;
+		fd_set						_write_fd;
+		fd_set						_read_fd;
+		int							_max_fd;
+		std::map<int, std::string>	_readFds;
 
 	public:
 		ServerRequest();
@@ -42,5 +43,6 @@ class ServerRequest
 		int		get_maxFd(void);
 		bool	selectFd(void);
 		int		fd_isset(int socketFd, std::string s);
+		void	setReadAndWriteFD(void);
 
 };

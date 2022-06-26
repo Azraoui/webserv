@@ -72,7 +72,6 @@ class Socket
             }
             return (0);
         };
-
         Socket    accept_conncetion(void);
 
         Socket() : _socket(-1), _addr() {};

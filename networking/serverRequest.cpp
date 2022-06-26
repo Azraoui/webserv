@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 18:37:50 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 16:20:01 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,15 @@ ServerRequest::~ServerRequest(){
 
 void ServerRequest::clear() // this function clear fd_set struct
 {
+	FD_ZERO(&this->_master);
 	FD_ZERO(&this->_read_fd);
+	FD_ZERO(&this->_write_fd);
 }
 
 
 void	ServerRequest::set_fd(int socketFd) // this function add socketFd to fdset
 {
-	FD_SET(socketFd, &this->_read_fd);
+	FD_SET(socketFd, &this->_master);
 }
 
 void	ServerRequest::set_maxFd(int fd)
@@ -44,6 +46,12 @@ int		ServerRequest::get_maxFd(void)
 	return _max_fd;
 }
 
+void	ServerRequest::setReadAndWriteFD(void)
+{
+	this->_read_fd = _master;
+	this->_write_fd = _master;
+}
+
 bool	ServerRequest::selectFd(void)
 {
 	timeval tmv;
@@ -51,7 +59,7 @@ bool	ServerRequest::selectFd(void)
 
 	tmv.tv_sec = 30;
 	tmv.tv_usec = 0;
-	if (select(_max_fd, &_read_fd, &_write_fd, &err, &tmv) < 0)
+	if (select(_max_fd, &_read_fd, &_write_fd, &err, &tmv) <= 0)
 		return false;
 	return true;
 }
