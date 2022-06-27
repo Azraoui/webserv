@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/27 18:06:31 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/27 18:33:52 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 
 // methods
 
+
 void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 {
 	int	readFd;
-
 
 	this->generateFileName(fd);
 	readFd = open(_requestFileName.c_str(), O_RDWR | O_APPEND | O_CREAT, 0666);
@@ -59,7 +59,14 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 	}
 	if (!_requestContent.empty())
 	{
-		
+		size_t firstPos = _requestContent.find("\r\n") + 2;
+		size_t secondPos;
+		if (_requestContent.find("0\r\n\r\n") == _requestContent.npos)
+			secondPos = _requestContent.find("\r\n", firstPos) - firstPos;
+		else
+			secondPos = _requestContent.find("0\r\n\r\n") - firstPos;
+		std::cout << "first = " << firstPos << " second = " << secondPos << std::endl;
+		std::cout << _requestContent.substr(firstPos, secondPos) << std::endl;
 		write(readFd, _requestContent.c_str(), _requestContent.size());
 	}
 	close(readFd);
