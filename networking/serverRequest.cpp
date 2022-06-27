@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 18:37:40 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 20:22:16 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ bool	ServerRequest::receiveData(int fd)
 	if (recv_ret <= 0)
 	{
 		_readRequest.erase(fd);
-		return false;
+		return (false);
 	}
 	std::string	temp(buffer);
-	std::cout << temp << std::endl;
 	delete [] buffer;
-	return true;
+	_readRequest[fd].parsing(temp, fd);
+	return (true);
 }

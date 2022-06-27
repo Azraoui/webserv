@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <fstream>
 
 class ReadRequest
 {
@@ -19,8 +20,15 @@ class ReadRequest
         size_t                              _bodyFileLength;
         bool                                _isRequestFinished;
         size_t                              _statusCode;
+		std::string							_requestFileName;
+		std::fstream						_requestFile;
 
     public:
+	    ReadRequest();
+		std::string		getRequestFileName(void) const;
+		void			setRequestFileName(std::string fileName);
+		void			creatRequestFile(int fd);
+
         std::string &getHost() {
             return _host;
         };
@@ -105,6 +113,9 @@ class ReadRequest
             return _isRequestFinished;
         };
 
-        ReadRequest();
+		// methods
+		void	parsing(std::string content, int fd);
+
+
         ~ReadRequest();
 };

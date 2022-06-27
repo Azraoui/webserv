@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 17:03:48 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/26 19:26:40 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include <sys/select.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <map>
 #include "./readRequest.hpp"
 
 #define BUFFER_SIZE 1024
