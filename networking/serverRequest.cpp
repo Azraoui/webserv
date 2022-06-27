@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 20:22:16 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/27 16:58:23 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,18 @@ void	ServerRequest::insertClient(int fd)
 	_readRequest.insert(std::make_pair(fd, ReadRequest()));
 }
 
-bool	ServerRequest::receiveData(int fd)
+bool	ServerRequest::readData(int fd)
 {
-	char *buffer = new char[BUFFER_SIZE];
+	char buffer[BUFFER_SIZE];
 	ssize_t recv_ret;
 
 	bzero(buffer, BUFFER_SIZE);
-	recv_ret = recv(fd, buffer, BUFFER_SIZE, 0);
+	recv_ret = read(fd, buffer, BUFFER_SIZE);
 	if (recv_ret <= 0)
 	{
 		_readRequest.erase(fd);
 		return (false);
 	}
-	std::string	temp(buffer);
-	delete [] buffer;
-	_readRequest[fd].parsing(temp, fd);
+	_readRequest[fd].parsing(buffer, fd, recv_ret);
 	return (true);
 }

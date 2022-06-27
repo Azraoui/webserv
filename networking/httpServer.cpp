@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/26 18:36:16 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/27 16:59:11 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void    HttpServer::runServers(void)
 
 bool	HttpServer::_readRequest(int clientFd)
 {
-    if (!_selectUtility.receiveData(clientFd))
+    if (!_selectUtility.readData(clientFd))
         return false;
     return true;
 }

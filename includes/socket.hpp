@@ -20,6 +20,7 @@ class Socket
         socklen_t           _clientLent;
     public:
         
+        void    exitPrint(std::string err);
         int & getSocket() {
             return _socket;
         };
@@ -32,6 +33,7 @@ class Socket
         }
 
         int initSocket(std::string &host, size_t &port) {
+            int opt = 1;
             // memset space for _addr
             memset((char *)&_addr, 0, sizeof(_addr));
             
@@ -48,10 +50,12 @@ class Socket
 
             _socket = socket(AF_INET, SOCK_STREAM, 0);
             if (_socket == -1) {
-                std::cerr << "Error: socket() failed " << std::endl;
-                return (-1);
+                exitPrint("Error in Socket");
             }
-
+            if ((setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0))
+            {
+                exitPrint("Error: setsockopt");
+            }
             fcntl(_socket, F_SETFL, O_NONBLOCK);
             return (0);
         };
@@ -59,16 +63,14 @@ class Socket
         int bindSocket() {
             //bin _addr to _socket
             if (bind(_socket, (struct sockaddr *)&_addr, sizeof(_addr)) == -1) {
-                std::cerr << "Error: bind() failed " << std::endl;
-                return (-1);
+                exitPrint("Error: bind() failed ");
             }
             return (0);
         };
 
         int listenSocket() {
             if (listen(_socket, 1024) == -1) {
-                std::cerr << "Error: listen() failed " << std::endl;
-                return (-1);
+                exitPrint("Error: listen() failed ");
             }
             return (0);
         };
