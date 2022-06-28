@@ -6,14 +6,14 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 18:18:29 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/28 23:28:13 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/readRequest.hpp"
 
 
-ReadRequest::ReadRequest():_isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
+ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent("") {
 }
 
 ReadRequest::~ReadRequest(){
@@ -43,11 +43,56 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 void	ReadRequest::_parseHeader(void)
 {
 	size_t end, start = 0;
+	std::vector<std::string> vtmp;
+	std::string	stmp;
 
+	_header.append("\n");
 	end = _header.find("\n", start);
 	while (end != _header.npos)
 	{
-		
+		stmp = _header.substr(start, end - start);
+		vtmp = split(stmp, ' ');
+		if (start == 0)
+		{
+			if (vtmp.size() != 3)
+			{
+				std::cerr << "bad request\n" << std::endl;
+				return ;
+			}
+			_method = vtmp[0];
+			_uriPath = vtmp[1];
+		}
+		else
+		{
+			if (vtmp[0] == "Transfer-Encoding:" && vtmp[1] == "chunked\r")
+				_isChunked = true;
+			else if (vtmp[0] == "Host:")
+			{
+				if (vtmp.size() != 2)
+				{
+					std::cerr << "bad request\n" << std::endl;
+					return ;
+				}
+				_host = vtmp[1].substr(0, vtmp[1].find(":"));
+				_port = atoi(vtmp[1].substr(vtmp[1].find(":") + 1, vtmp[1].find("\r")).c_str());
+			}
+			else if (vtmp[0] == "Connection:")
+			{
+				if (vtmp.size() > 1 && vtmp[1] == "keep-alive\r")
+					_connection = true;
+			}
+			else if (vtmp[0] == "Content-Length:")
+			{
+				if (vtmp.size() > 1)
+					_bodyFileLength = atoi(vtmp[1].c_str());
+			}
+			else if (vtmp[0] == "Content-Type:")
+			{
+				std::cout << "vtmp[1]: " << vtmp[1] << std::endl;
+				if (vtmp.size() > 1)
+					_contentType = vtmp[1];
+			}
+		}
 		start = end + 1;
 		end = _header.find("\n", start);
 	}
@@ -74,9 +119,6 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		_requestContent.erase(0, _requestContent.find("\r\n\r\n") + 4);
 		_parseHeader();
 	}
-	// this 2 variable need to set in header request
-	_isChunked = true;
-	_bodyFileLength = 1;
 	if (!_requestContent.empty() && _isChunked && _bodyFileLength > 0)
 	{
 		size_t end, start = 0;
@@ -93,7 +135,6 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 				s << _requestContent.substr(start, end - start);
 				s >> std::hex >> _chunkSize;
 				isFinish = false;
-				std::cout << _requestContent.substr(start, end - start) << std::endl << _chunkSize << std::endl;
 			}
 			else if (_chunkSize != _chunkContent.size())
 			{
@@ -122,7 +163,7 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 	}
 	off_t size;
 	size = lseek(readFd, 0, SEEK_END);
-	if (size == _bodyFileLength)
+	if ((unsigned long)size == _bodyFileLength)
 	{
 		_isRequestFinished = true;
 		std::cout << "i was here\n";
