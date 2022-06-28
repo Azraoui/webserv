@@ -8,6 +8,7 @@
 #include <ctime>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sstream>
 
 class ReadRequest
 {
@@ -23,11 +24,13 @@ class ReadRequest
 		int                                 _bodyFileFd;
 		size_t                              _bodyFileLength;
 		bool                                _isRequestFinished;
+		bool								_isChunked;
 		size_t                              _statusCode;
 		std::string							_requestFileName;
-		std::fstream						_requestFile;
 		std::string                         _requestContent;
 		std::string							_header;
+		size_t								_chunkSize;
+		std::string							_chunkContent;
 
 	public:
 		ReadRequest();
