@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 18:01:26 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/28 18:18:29 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,22 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 
 // methods
 
+// private
+
+void	ReadRequest::_parseHeader(void)
+{
+	size_t end, start = 0;
+
+	end = _header.find("\n", start);
+	while (end != _header.npos)
+	{
+		
+		start = end + 1;
+		end = _header.find("\n", start);
+	}
+}
+
+//	public
 
 void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 {
@@ -56,6 +72,7 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 	{
 		_header.append(_requestContent.substr(0, _requestContent.find("\r\n\r\n")));
 		_requestContent.erase(0, _requestContent.find("\r\n\r\n") + 4);
+		_parseHeader();
 	}
 	// this 2 variable need to set in header request
 	_isChunked = true;
@@ -102,6 +119,13 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 	{
 		write(readFd, _requestContent.c_str(), _requestContent.size());
 		_requestContent.clear();
+	}
+	off_t size;
+	size = lseek(readFd, 0, SEEK_END);
+	if (size == _bodyFileLength)
+	{
+		_isRequestFinished = true;
+		std::cout << "i was here\n";
 	}
 	close(readFd);
 }

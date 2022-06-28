@@ -31,6 +31,7 @@ class ReadRequest
 		std::string							_header;
 		size_t								_chunkSize;
 		std::string							_chunkContent;
+		void								_parseHeader(void);
 
 	public:
 		ReadRequest();
