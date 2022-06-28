@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 23:28:13 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/28 23:45:10 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void	ReadRequest::_parseHeader(void)
 			}
 			else if (vtmp[0] == "Content-Type:")
 			{
-				std::cout << "vtmp[1]: " << vtmp[1] << std::endl;
 				if (vtmp.size() > 1)
 					_contentType = vtmp[1];
 			}

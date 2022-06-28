@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 17:06:53 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/28 23:43:25 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@
 class ServerRequest
 {
 	private:
-		fd_set						_master;
 		fd_set						_write_fd;
 		fd_set						_read_fd;
 		int							_max_fd;
 		std::map<int, ReadRequest>	_readRequest;
 
 	public:
+		fd_set						_master;
 		ServerRequest();
 		~ServerRequest();
 
