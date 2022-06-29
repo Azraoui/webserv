@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 23:44:20 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/29 18:12:46 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,15 +63,27 @@ void    HttpServer::runServers(void)
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "read"))
             {
                 if (!this->_readRequest(_clientsSock[i].getClientFd()))
+                {
+                    _clientsSock.erase(_clientsSock.begin() + i);
                     continue;
+                }
             }
             // reponse
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
-                std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-                write(_clientsSock[i].getClientFd(), hello.c_str(), hello.size());
-                close(_clientsSock[i].getClientFd());
-                FD_CLR(_clientsSock[i].getClientFd(), &_selectUtility._master);
+                int fd = _clientsSock[i].getClientFd();
+                if (_selectUtility.getRequest(fd).getifrequestFinished())
+                {
+                    std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+                    write(_clientsSock[i].getClientFd(), hello.c_str(), hello.size());
+                    if (!_selectUtility.getRequest(fd).getConnection())
+                    {
+                        // std::cout << "i was here" << std::endl;
+                        close(_clientsSock[i].getClientFd());
+                        FD_CLR(_clientsSock[i].getClientFd(), &_selectUtility._master);
+                        _clientsSock.erase(_clientsSock.begin() + i);
+                    }
+                }
                 // reponse here
             }
         }

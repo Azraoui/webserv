@@ -6,14 +6,14 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 23:45:10 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/29 18:12:33 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/readRequest.hpp"
 
 
-ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent("") {
+ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent("") {
 }
 
 ReadRequest::~ReadRequest(){
@@ -156,17 +156,11 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		}
 	}
 	else
-	{
 		write(readFd, _requestContent.c_str(), _requestContent.size());
-		_requestContent.clear();
-	}
 	off_t size;
 	size = lseek(readFd, 0, SEEK_END);
-	if ((unsigned long)size == _bodyFileLength)
-	{
+	if (((unsigned long)size == _bodyFileLength) || !_bodyFileLength)
 		_isRequestFinished = true;
-		std::cout << "i was here\n";
-	}
 	close(readFd);
 }
 
@@ -184,4 +178,9 @@ void	ReadRequest::generateFileName(int fd)
 {
 	if (this->_requestFileName.empty())
 		this->setRequestFileName("/tmp/" + std::to_string(fd) + "_clientFd_" + std::to_string(time(NULL)));
+}
+
+bool	ReadRequest::getConnection(void) const
+{
+	return _connection;
 }

@@ -45,6 +45,7 @@ class ReadRequest
 			return _host;
 		};
 
+		bool	getConnection(void) const;
 		size_t getPort() {
 			return _port;
 		};

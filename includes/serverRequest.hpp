@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/28 23:43:25 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/29 11:30:33 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class ServerRequest
 		~ServerRequest();
 
 		//methods
+		ReadRequest  getRequest(int fd) const;
 		void	clear(void);
 		void	set_fd(int socketFd);
 		void	set_maxFd(int fd);
