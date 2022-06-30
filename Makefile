@@ -6,7 +6,7 @@
 #    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/06/27 09:20:03 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/06/29 22:02:59 by ael-azra         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,9 @@ all: $(NAME)
 
 $(NAME): $(SRC) $(INC)
 	@$(FLAG) $(SRC) -o $(NAME)
+
+run: all
+	@ ./webserv
 
 clean:
 	@echo -n

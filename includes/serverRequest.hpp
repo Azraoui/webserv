@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/29 11:30:33 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/30 21:59:14 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,5 @@ class ServerRequest
 		void	setReadAndWriteFD(void);
 		void	insertClient(int fd);
 		bool	readData(int fd);
+		void	erase(int fd);
 };
