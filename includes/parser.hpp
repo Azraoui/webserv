@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 15:55:45 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 11:15:41 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/06/30 22:50:50 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,3 +67,4 @@ struct Vserver
 
 void					exitError(std::string const &err);
 std::vector<Vserver>	parsingConfigFile(std::string const &fileName);
+bool					isEqual(const std::pair<std::string, int> &element);

@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/24 22:10:34 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/01 17:06:45 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,17 @@ std::vector<std::string>	split(std::string const &line, char del = ' ')
 	return ret;
 }
 
+bool	isEqual(const std::set<std::pair<std::string, int> > &element, int port)
+{
+	std::set<std::pair<std::string, int> >::iterator it;
+	for (it = element.begin(); it != element.end(); ++it)
+	{
+		if (it->second == port)
+			return true;
+	}
+	return false;
+}
+
 void	getPortAndHost(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
 {
 	if (tokens.size() != 3)
@@ -75,6 +86,8 @@ void	getPortAndHost(std::vector<std::string> &tokens, bool const &insideLocation
 		int port = atoi(tokens[2].c_str());
 		if (port <= 0)
 			exitError("error port doesn't match the correct format");
+		if (isEqual(_serverConfig[i_S]._listen, port))
+			exitError("error port already used");
 		_serverConfig[i_S]._listen.insert(std::make_pair(tokens[1], port));
 	}
 	else
