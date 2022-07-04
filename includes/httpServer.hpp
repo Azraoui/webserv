@@ -27,7 +27,7 @@ class HttpServer
 		void	_loadServers(void);
 		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
-		void	_response(int clientFd);
+		void	_response(int clientFd, int i);
 
 	public:
 		HttpServer(const std::vector<Vserver> &servers);

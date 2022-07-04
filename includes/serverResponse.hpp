@@ -4,11 +4,9 @@
 #include "httpServer.hpp"
 
 
-class serverResponse
+class ServerResponse
 {
     private:
-        Vserver                 _matchedServer; // we can remove it after finishing i guess
-        std::vector<Vserver>    _servers;
         ReadRequest             _request;
         std::string             _method;
         std::string             _uriPath;
@@ -25,12 +23,8 @@ class serverResponse
         size_t                  _isResponseFinished;
 
     public:
-        Vserver matchServer();
-        Vserver getMatchedServer() {
-            return _matchedServer;
-        };
-        serverResponse(ReadRequest request, std::vector<Vserver> servers);
-        ~serverResponse();
+        ServerResponse();
+        ~ServerResponse();
 };
 
 #endif

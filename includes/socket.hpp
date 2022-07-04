@@ -10,6 +10,7 @@
 # include <string.h>
 # include <fcntl.h>
 # include <iostream>
+# include "./parser.hpp"
 
 class Socket
 {
@@ -18,20 +19,25 @@ class Socket
         int                 _clientFd;
         struct sockaddr_in  _addr, _clientAddr;
         socklen_t           _clientLent;
+        int                 _serverPosition;
+
     public:
-        
         void    exitPrint(std::string err);
         int & getSocket() {
             return _socket;
         };
-
+        void    addServer(int i){
+            _serverPosition = i;
+        };
+        int    getServersPosition(void) const {
+            return this->_serverPosition;
+        };
         struct sockaddr_in & getAddr() {
             return _addr;
         };
         int getClientFd(void){
             return _clientFd;
-        }
-
+        };
         int initSocket(std::string &host, size_t &port) {
             int opt = 1;
             // memset space for _addr
@@ -76,7 +82,7 @@ class Socket
         };
         Socket    accept_conncetion(void);
 
-        Socket() : _socket(-1), _addr() {};
+        Socket() : _socket(-1), _addr(){};
         ~Socket() {};
 };
 
