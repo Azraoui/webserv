@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverRequest.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/30 21:59:14 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 18:09:16 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "./readRequest.hpp"
+#include "./serverResponse.hpp"
+
 
 #define BUFFER_SIZE 1024 * 10
 
@@ -31,6 +33,7 @@ class ServerRequest
 		fd_set						_read_fd;
 		int							_max_fd;
 		std::map<int, ReadRequest>	_readRequest;
+		std::map<int, serverResponse> _sendResponse;
 
 	public:
 		fd_set						_master;
@@ -39,6 +42,7 @@ class ServerRequest
 
 		//methods
 		ReadRequest  getRequest(int fd) const;
+		serverResponse  &getResponse(int fd);
 		void	clear(void);
 		void	set_fd(int socketFd);
 		void	set_maxFd(int fd);

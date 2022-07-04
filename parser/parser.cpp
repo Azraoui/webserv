@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/01 17:06:45 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 17:31:20 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.hpp"
+
+
 
 void	printVserver(std::vector<Vserver> const &v)
 {

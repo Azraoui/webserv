@@ -3,7 +3,6 @@
 
 #include "httpServer.hpp"
 
-
 class serverResponse
 {
     private:
@@ -25,12 +24,14 @@ class serverResponse
         size_t                  _isResponseFinished;
 
     public:
+
         Vserver matchServer();
         Vserver getMatchedServer() {
             return _matchedServer;
         };
         serverResponse(ReadRequest request, std::vector<Vserver> servers);
         ~serverResponse();
+        void handling_errors();
 };
 
 #endif

@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/29 18:12:33 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 18:55:09 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/readRequest.hpp"
 
 
-ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent("") {
+ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
+	_is_bad_request.first = false;
 }
 
 ReadRequest::~ReadRequest(){
@@ -64,6 +65,8 @@ void	ReadRequest::_parseHeader(void)
 		}
 		else
 		{
+			if (vtmp[0] == "Transfer-Encoding:" && vtmp[1] != "chunked\r")
+				setIsBadRequest(std::make_pair(true, 501));
 			if (vtmp[0] == "Transfer-Encoding:" && vtmp[1] == "chunked\r")
 				_isChunked = true;
 			else if (vtmp[0] == "Host:")
@@ -117,6 +120,8 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		_header.append(_requestContent.substr(0, _requestContent.find("\r\n\r\n")));
 		_requestContent.erase(0, _requestContent.find("\r\n\r\n") + 4);
 		_parseHeader();
+		// if (_is_bad_request.first)
+		// 	write
 	}
 	if (!_requestContent.empty() && _isChunked && _bodyFileLength > 0)
 	{
@@ -183,4 +188,8 @@ void	ReadRequest::generateFileName(int fd)
 bool	ReadRequest::getConnection(void) const
 {
 	return _connection;
+}
+serverResponse & ReadRequest::getResponse(int fd)
+{
+	return _sendResponse[fd];
 }

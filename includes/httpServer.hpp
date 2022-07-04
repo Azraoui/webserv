@@ -5,6 +5,7 @@
 # include "./parser.hpp" // AbdAllah Vserver struct
 # include "./socket.hpp"
 # include "./serverRequest.hpp"
+# include "./serverResponse.hpp"
 
 # include <string>
 # include <vector>

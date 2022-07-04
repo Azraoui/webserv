@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/30 22:02:19 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 18:21:13 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/httpServer.hpp"
+
+std::map<int, std::string> status_code; // first : key | second : string value of error 
 
 HttpServer::HttpServer(const std::vector<Vserver> &servers) : _servers(servers) {
     this->_loadServers();
@@ -38,8 +40,29 @@ void	HttpServer::_loadServers(void)
     }
 };
 
+void fill_map_error_value()
+{
+    status_code.insert(std::make_pair(200, "OK"));
+    status_code.insert(std::make_pair(201, "Created"));
+    status_code.insert(std::make_pair(204, "No Content"));
+    
+    status_code.insert(std::make_pair(301, "Moved Permanently"));
+    
+    status_code.insert(std::make_pair(400, "Bad Request"));
+    status_code.insert(std::make_pair(403, "Forbidden"));
+    status_code.insert(std::make_pair(404, "Not Found"));
+    status_code.insert(std::make_pair(405, "Method Not Allowed"));
+    status_code.insert(std::make_pair(409, "Conflict"));
+    status_code.insert(std::make_pair(413, "Request Entity Too Large"));
+    status_code.insert(std::make_pair(414, "Request-URI Too Long"));
+    
+    status_code.insert(std::make_pair(500, "Internal Server Error"));
+    status_code.insert(std::make_pair(501, "Not Implemented"));
+}
+
 void    HttpServer::runServers(void)
 {
+    fill_map_error_value(); // FILL STATUS_CODE MAP
     _selectUtility.clear();
     for (size_t i = 0; i < _serverSock.size(); i++)
     {
@@ -74,8 +97,13 @@ void    HttpServer::runServers(void)
                 int fd = _clientsSock[i].getClientFd();
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                 {
-                    std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
-                    write(_clientsSock[i].getClientFd(), hello.c_str(), hello.size());
+                    // std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+                    _selectUtility.getResponse(fd);
+                    // _selectUtility.getResponse(fd);
+                    
+                    // handling_response(_selectUtility.getRequest(fd), );
+                    
+                    // write(_clientsSock[i].getClientFd(), hello.c_str(), hello.size());
                     FD_CLR(fd, &_selectUtility._master);
                     close(fd);
                     _clientsSock.erase(_clientsSock.begin() + i);
