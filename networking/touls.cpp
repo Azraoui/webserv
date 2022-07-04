@@ -1,6 +1,6 @@
-#include "../includes/httpServer.hpp"
+#include "../includes/touls.hpp"
 
-std::string	& errorPage(std::string error)
+std::string	 errorPage(std::string error)
 {
 std::string htmlPage;
 htmlPage = "<!DOCTYPE html>\n"\

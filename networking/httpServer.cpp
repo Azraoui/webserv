@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/04 21:55:09 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 00:04:04 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,18 @@ void	HttpServer::_acceptRequest(int position)
 
 void	HttpServer::_response(int clientFd, int i)
 {
+    // _selectUtility.
+    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+    //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
+    write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
     _clientsSock.erase(_clientsSock.begin() + i);
     _selectUtility.erase(clientFd);
 }
+
+// void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
+// {
+    
+// }

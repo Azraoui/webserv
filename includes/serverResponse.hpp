@@ -1,7 +1,7 @@
 #ifndef SERVERRESPONSE_HPP
 #define SERVERRESPONSE_HPP
 
-#include "httpServer.hpp"
+#include "readRequest.hpp"
 
 
 class ServerResponse
@@ -20,10 +20,10 @@ class ServerResponse
         std::string             _requestBodyFileName;
         bool                    _isCgi;
         bool                    _isDirectory;
-        size_t                  _isResponseFinished;
+        bool                    _isResponseFinished;
 
     public:
-        ServerResponse();
+        ServerResponse(ReadRequest request): _request(request){};
         ~ServerResponse();
 };
 

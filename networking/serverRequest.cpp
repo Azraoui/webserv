@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/04 15:43:43 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 23:56:06 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,3 +101,8 @@ void	ServerRequest::erase(int fd)
 {
 	_readRequest.erase(fd);
 }
+
+// void	ServerRequest::setResponse(int fd, ReadRequest request)
+// {
+// 	_sendResponse.insert(fd, ServerResponse(request));
+// }

@@ -5,6 +5,7 @@
 # include "./parser.hpp" // AbdAllah Vserver struct
 # include "./socket.hpp"
 # include "./serverRequest.hpp"
+# include "./touls.hpp"
 
 # include <string>
 # include <vector>
@@ -28,6 +29,7 @@ class HttpServer
 		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
 		void	_response(int clientFd, int i);
+		void	_handleGetMethod(ReadRequest request, Vserver &server);
 
 	public:
 		HttpServer(const std::vector<Vserver> &servers);

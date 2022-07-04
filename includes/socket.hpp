@@ -29,7 +29,7 @@ class Socket
         void    addServer(int i){
             _serverPosition = i;
         };
-        int    getServersPosition(void) const {
+        int    getServerPosition(void) const {
             return this->_serverPosition;
         };
         struct sockaddr_in & getAddr() {
