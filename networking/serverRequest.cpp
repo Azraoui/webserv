@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/04 23:56:06 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 00:14:35 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void ServerRequest::clear() // this function clear fd_set struct
 	FD_ZERO(&this->_read_fd);
 	FD_ZERO(&this->_write_fd);
 }
+
 
 void	ServerRequest::set_fd(int socketFd) // this function add socketFd to fdset
 {

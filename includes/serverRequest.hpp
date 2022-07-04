@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:41:30 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 00:02:44 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 00:19:42 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "./readRequest.hpp"
-// #include "./serverResponse.hpp"
+#include "./serverResponse.hpp"
 
 #define BUFFER_SIZE 1024 * 10
 
@@ -43,6 +43,7 @@ class ServerRequest
 		//methods
 		ReadRequest  getRequest(int fd) const;
 		void	setResponse(int fd);
+		ServerResponse  &getResponse(int fd);
 		void	clear(void);
 		void	set_fd(int socketFd);
 		void	set_maxFd(int fd);

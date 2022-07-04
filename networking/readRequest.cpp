@@ -6,14 +6,15 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/04 22:34:06 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 00:14:27 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/readRequest.hpp"
 
 
-ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent("") {
+ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
+	_is_bad_request.first = false;
 }
 
 ReadRequest::~ReadRequest(){
@@ -64,6 +65,8 @@ void	ReadRequest::_parseHeader(void)
 		}
 		else
 		{
+			if (vtmp[0] == "Transfer-Encoding:" && vtmp[1] != "chunked\r")
+				setIsBadRequest(std::make_pair(true, 501));
 			if (vtmp[0] == "Transfer-Encoding:" && vtmp[1] == "chunked\r")
 				_isChunked = true;
 			else if (vtmp[0] == "Host:")

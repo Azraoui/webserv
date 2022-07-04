@@ -33,15 +33,16 @@ class ReadRequest
 		size_t								_chunkSize;
 		std::string							_chunkContent;
 		void								_parseHeader(void);
+		std::pair<bool, int>				_is_bad_request; // first : true if there is an error | second : value of error 
 
 	public:
 		ReadRequest();
 		ReadRequest(ReadRequest const &obj);
-		std::string		getContentType(void) const;
 		std::string		getRequestFileName(void) const;
 		void			setRequestFileName(std::string fileName);
 		void			generateFileName(int fd);
 		void			parsing(char *content, int fd, ssize_t contentSize);
+		std::string		getContentType(void) const;
 		std::string &getHost() {
 			return _host;
 		};
@@ -63,6 +64,18 @@ class ReadRequest
 			return _version;
 		};
 
+		std::string &getChunkContent() {
+			return _chunkContent;
+		};
+
+		bool &getIsChunked() {
+			return _isChunked;
+		};
+
+		std::pair<bool, int>	&getIsBadRequest(){
+			return _is_bad_request;
+		};
+
 		std::map<std::string, std::string> &getHeaderDirectives() {
 			return _headerDirectives;
 		};
@@ -81,6 +94,9 @@ class ReadRequest
 
 		size_t getStatusCode() {
 			return _statusCode;
+		};
+		std::string &ContentType() {
+			return _contentType;
 		};
 
 		void setHost(std::string &host) {
@@ -123,6 +139,9 @@ class ReadRequest
 			_isRequestFinished = isRequestFinished;
 		};
 
+		void setIsBadRequest(std::pair<bool, int> ret){
+			_is_bad_request = ret;
+		};
 		bool getifrequestFinished() {
 			return _isRequestFinished;
 		};

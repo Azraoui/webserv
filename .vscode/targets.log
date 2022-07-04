@@ -1,0 +1,398 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+
+# Make data base, printed on Mon Jul  4 16:18:18 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# makefile (from `Makefile', line 15)
+SRC = ./main.cpp ./parser/parser.cpp ./networking/httpServer.cpp ./networking/socket.cpp ./networking/serverRequest.cpp ./networking/readRequest.cpp 
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/houbeid/Desktop/webserv
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# environment
+VSCODE_NODE_CACHED_DATA_DIR = /Users/houbeid/Library/Application Support/Code/CachedData/ea3859d4ba2f3e577a159bc91e3074c5d85c0523
+# environment
+VERBOSE_LOGGING = true
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/_d/ffjgzmh92flbhgsmdgstm10h0000gn/T/vscode-ipc-f3b574b8-6b24-4580-9a51-55a4b86b72c6.sock
+# environment
+PATH = /Users/houbeid/goinfre/houbeid/.brew/bin:/Users/houbeid/miniconda3/bin:/Users/houbeid/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+HOME_BREW = /Users/houbeid/goinfre/houbeid
+# environment
+VSCODE_LOG_STACK = false
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.EdS8GWmnu9/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+CONDA_EXE = /Users/houbeid/miniconda3/bin/conda
+# environment
+PWD = /Users/houbeid/Desktop/webserv
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+HOME = /Users/houbeid
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+LOGNAME = houbeid
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+CONDA_PROMPT_MODIFIER = (base) 
+# environment
+ZSH = /Users/houbeid/.oh-my-zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+CONDA_DEFAULT_ENV = base
+# environment
+XPC_FLAGS = 0x0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 1
+# default
+MAKE_VERSION := 3.81
+# environment
+AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
+# environment
+USER = houbeid
+# makefile
+.DEFAULT_GOAL := all
+# makefile (from `Makefile', line 13)
+NAME = webserv
+# environment
+PIPE_LOGGING = true
+# environment
+LESS = -R
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+CONDA_SHLVL = 1
+# default
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+# makefile (from `Makefile', line 20)
+INC = ./includes/parser.hpp ./includes/httpServer.hpp ./includes/socket.hpp ./includes/serverRequest.hpp ./includes/readRequest.hpp 
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/_d/ffjgzmh92flbhgsmdgstm10h0000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/houbeid/Library/Application Support/Code/1.52.1-main.sock
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.55600.55606
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# makefile (from `Makefile', line 25)
+FLAG = c++ -Wall -Wextra -Werror -std=c++98
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x1
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# environment
+PAGER = less
+# environment
+LC_ALL = C
+# environment
+CONDA_PYTHON_EXE = /Users/houbeid/miniconda3/bin/python
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# environment
+_CE_M = 
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# environment
+CONDA_PREFIX = /Users/houbeid/miniconda3
+# environment
+VSCODE_PID = 716
+# environment
+_CE_CONDA = 
+# environment
+LANG = C
+# variable set hash-table stats:
+# Load=77/1024=8%, Rehash=0, Collisions=5/110=5%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777221, inode 10693230): 14 files, no impossibilities.
+
+# 14 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+networking/socket.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+all: webserv
+#  Phony target (prerequisite of .PHONY).
+#  Command-line target.
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/5=0%
+
+webserv: main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: `'
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := webserv
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# automatic
+# | := 
+# automatic
+# < := main.cpp
+# automatic
+# ^ := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# automatic
+# ? := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=5/13=38%
+#  commands to execute (from `Makefile', line 30):
+	@$(FLAG) $(SRC) -o $(NAME)
+	
+
+.PHONY: all clean fclean re
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+includes/httpServer.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+includes/readRequest.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+networking/httpServer.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+networking/readRequest.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+ 
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+includes/parser.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+includes/serverRequest.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+main.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+networking/serverRequest.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+fclean: clean
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 39):
+	@rm -f $(NAME)
+	
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+re: fclean all
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+run: all
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 33):
+	@ ./webserv
+	
+
+# Not a target:
+parser/parser.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 36):
+	@echo -n
+	
+
+# Not a target:
+includes/socket.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-04 16:14:54
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# files hash-table stats:
+# Load=21/1024=2%, Rehash=0, Collisions=0/55=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Mon Jul  4 16:18:18 2022
+
+ 
