@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/30 22:02:19 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 16:03:53 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void    HttpServer::runServers(void)
                 int fd = _clientsSock[i].getClientFd();
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                 {
+                    
                     std::string hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
                     write(_clientsSock[i].getClientFd(), hello.c_str(), hello.size());
                     FD_CLR(fd, &_selectUtility._master);
@@ -111,3 +112,8 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.set_maxFd(tmp.getClientFd());
     _selectUtility.insertClient(tmp.getClientFd());
 }
+
+// void	HttpServer::_response(int clientFd)
+// {
+    
+// }

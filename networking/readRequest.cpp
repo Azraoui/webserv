@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/29 18:12:33 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/04 16:10:46 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,4 +183,8 @@ void	ReadRequest::generateFileName(int fd)
 bool	ReadRequest::getConnection(void) const
 {
 	return _connection;
+}
+
+std::string		ReadRequest::getContentType(void) const{
+	return this->_contentType;
 }

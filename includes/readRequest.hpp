@@ -37,6 +37,7 @@ class ReadRequest
 	public:
 		ReadRequest();
 		ReadRequest(ReadRequest const &obj);
+		std::string		getContentType(void) const;
 		std::string		getRequestFileName(void) const;
 		void			setRequestFileName(std::string fileName);
 		void			generateFileName(int fd);
