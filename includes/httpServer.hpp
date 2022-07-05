@@ -6,6 +6,7 @@
 # include "./socket.hpp"
 # include "./serverRequest.hpp"
 # include "./touls.hpp"
+#include "../cgi/cgi.hpp"
 
 # include <string>
 # include <vector>

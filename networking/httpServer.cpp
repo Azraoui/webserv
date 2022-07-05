@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 00:20:11 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 02:37:05 by houbeid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ void    HttpServer::runServers(void)
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
                 int fd = _clientsSock[i].getClientFd();
+                //if (_selectUtility.getRequest(fd).getUriPath().find(".php") != std::string::npos)
+                    //cgi cgi( _selectUtility.getRequest(fd));
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                     _response(fd, i);
                 // reponse here
@@ -134,7 +136,7 @@ void	HttpServer::_response(int clientFd, int i)
     // _selectUtility.
     // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
     //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
+    std::string test = "HTTP/1.1 200 OK\r\n";
     write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
