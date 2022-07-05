@@ -67,3 +67,10 @@ std::string errRespone(int err, std::map<int, std::string> errs)
 	std::string body = "\n" + errorPage(std::to_string(err), errs[err]);
 	return firstLine + contentType + contentLength + body;
 }
+
+std::string redirect(int err, std::map<int, std::string> errs, std::string link)
+{
+	std::string firstLine = "HTTP/1.1 " + std::to_string(err) + " " + errs[err] + "\n";
+	std::string location = "Location: " + link + "\n\n";
+	return firstLine + location;
+}

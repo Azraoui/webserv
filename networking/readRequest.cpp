@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 14:07:28 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/05 16:29:13 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ std::string		ReadRequest::getContentType(void) const {
 
 void	ReadRequest::handling_response_errors()
 {
-	std::cout << "------------------------------" << std::endl;
+	// std::cout << "------------------------------" << std::endl;
 	std::size_t found = _uriPath.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%");
 	if (found!=std::string::npos)
 	{
@@ -212,5 +212,6 @@ void	ReadRequest::handling_response_errors()
 		_is_bad_request.first = true;
 		_is_bad_request.second = 414;
 	}
+	
 	
 }

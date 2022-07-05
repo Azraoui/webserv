@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 16:08:16 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 18:41:28 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,6 @@ void    HttpServer::runServers(void)
                 int fd = _clientsSock[i].getClientFd();
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                 {
-                    // _handling_response_errors(); // need readRequest
-                    _selectUtility.getRequest(fd).handling_response_errors();
                     _responseServer(fd, i);
                 }
                 // reponse here
@@ -132,19 +130,43 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.set_maxFd(tmp.getClientFd());
     _selectUtility.insertClient(tmp.getClientFd());
 }
-
+void    HttpServer::_handling_method_allowed_error(ReadRequest request, Vserver &server)
+{
+    int pos_loc;
+    Location loc;
+    std::set<std::string>::iterator it;
+    
+    pos_loc = matchLocationAndUri(server._locations, request.getUriPath());
+    loc = server._locations[pos_loc];
+    for (it = loc._allowed_methods.begin(); it != loc._allowed_methods.end(); it++)
+    {
+        // std::cout << "--------------" << std::endl;
+        // std::cout << *it << " | " << request.getMethod() << std::endl;
+        if (*it == request.getMethod())
+            return;
+        // std::cout << "--------------" << std::endl;
+    }
+    for (it = server._allowed_methods.begin(); it != server._allowed_methods.end(); it++)
+    {
+        // std::cout << "--------------------------------------------------------\n" << std::endl;
+        // std::cout << "--------------" << std::endl;
+        // std::cout << *it << " | " << request.getMethod() << std::endl;
+        if (*it == request.getMethod())
+            return;
+        // std::cout << "--------------" << std::endl;
+    }
+    request.setIsBadRequest(std::make_pair(true, 405));
+    std::cout << "ERROR 405 !!" << std::endl;
+}
 void	HttpServer::_responseServer(int clientFd, int i)
 {
+    // _selectUtility.getRequest(clientFd).handling_response_errors();
+    // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
-    // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
-    // write(clientFd, msg.c_str(), msg.size());
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd)
-    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-    //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
-    write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
     _clientsSock.erase(_clientsSock.begin() + i);
@@ -166,20 +188,39 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
             rootAndUri = server._locations[i]._rootPath + temp;
         else // i should handle in config file if i don't find root in server and in location -> throw error
             rootAndUri = server._rootPath + temp;
-    }
-    if (!lstat(rootAndUri.c_str(), &buf))
-    {
-        if (buf.st_mode & S_IXUSR)
+        if (!lstat(rootAndUri.c_str(), &buf))
         {
-            msg = errRespone(403, status_code);
+            if (!(buf.st_mode & S_IREAD))
+            {
+                msg = errRespone(403, status_code);
+                write(clientFd, msg.c_str(), msg.size());
+            }
+            else if (buf.st_mode & S_IFDIR)
+            {
+                if (rootAndUri[rootAndUri.size() - 1] != '/')
+                {
+                    msg = redirect(301, status_code, request.getUriPath() + '/');
+                    write(clientFd, msg.c_str(), msg.size());
+                }
+                else
+                {
+                    for (size_t j = 0; j < server._locations[i]._index.size(); j++)
+                    {
+                        std::cout << "i was here\n";
+                        if (!lstat(server._locations[i]._index[j].c_str(), &buf) && !(buf.st_mode & S_IFDIR))
+                        {
+                            std::cout << server._locations[i]._index[j] << std::endl;
+                            // std::cout << server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".")) << std::endl;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            msg = errRespone(404, status_code);
             write(clientFd, msg.c_str(), msg.size());
         }
-        else if (buf.st_mode & S_IFDIR)
-            std::cout << "yes" << std::endl;
-    }
-    else
-    {
-        msg = errRespone(404, status_code);
-        write(clientFd, msg.c_str(), msg.size());
     }
 }
