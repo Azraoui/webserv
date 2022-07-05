@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 15:10:02 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 15:15:51 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,11 @@ void    HttpServer::runServers(void)
             {
                 int fd = _clientsSock[i].getClientFd();
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
-                    _response(fd, i);
+                {
+                    // _handling_response_errors(); // need readRequest
+                    _selectUtility.getRequest(fd).handling_response_errors();
+                    _responseServer(fd, i);
+                }
                 // reponse here
             }
         }
@@ -129,12 +133,18 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.insertClient(tmp.getClientFd());
 }
 
-void	HttpServer::_response(int clientFd, int i)
+void	HttpServer::_responseServer(int clientFd, int i)
 {
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
     // write(clientFd, msg.c_str(), msg.size());
+    // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // _selectUtility.getRequest(clientFd)
+    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+    //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
+    write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
     _clientsSock.erase(_clientsSock.begin() + i);

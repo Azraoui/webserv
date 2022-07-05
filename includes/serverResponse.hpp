@@ -3,10 +3,10 @@
 
 #include "readRequest.hpp"
 
-
 class ServerResponse
 {
     private:
+        // Vserver                 _server;
         ReadRequest             _request;
         std::string             _method;
         std::string             _uriPath;
@@ -23,6 +23,7 @@ class ServerResponse
         bool                    _isResponseFinished;
 
     public:
+        ServerResponse();
         ServerResponse(ReadRequest request): _request(request){};
         ~ServerResponse();
 };
