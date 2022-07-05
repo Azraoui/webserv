@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 18:41:28 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 18:55:35 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,15 +204,32 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                 }
                 else
                 {
+                    std::string indexPath;
+                    std::string extension;
                     for (size_t j = 0; j < server._locations[i]._index.size(); j++)
                     {
-                        std::cout << "i was here\n";
-                        if (!lstat(server._locations[i]._index[j].c_str(), &buf) && !(buf.st_mode & S_IFDIR))
+                        indexPath = rootAndUri + server._locations[i]._index[j];
+                        if (!lstat(indexPath.c_str(), &buf) && !(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
                         {
-                            std::cout << server._locations[i]._index[j] << std::endl;
-                            // std::cout << server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".")) << std::endl;
+                            extension = server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".") + 1);
                             break;
                         }
+                    }
+                    if (extension.empty())
+                    {
+                        if (server._locations[i]._autoindex == "on")
+                        {
+                            // handle auto index
+                        }
+                        else
+                        {
+                            msg = errRespone(403, status_code);
+                            write(clientFd, msg.c_str(), msg.size());
+                        }
+                    }
+                    else
+                    {
+                        
                     }
                 }
             }
