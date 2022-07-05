@@ -1,13 +1,14 @@
 #include "../includes/touls.hpp"
 
-std::string	 errorPage(std::string error)
+std::string	 errorPage(std::string error, std::string msg)
 {
 std::string htmlPage;
 htmlPage = "<!DOCTYPE html>\n"\
 "<html lang=\"en\">\n"\
 "<head>\n"\
 "	<style>\n"\
-"		h1 {text-align: center; margin-top: 20%; color: red; font-size: 100px;}\n"\
+"		h1 {text-align: center; margin-top: 10%; color: red; font-size: 70px;}\n"\
+"		h2 {text-align: center; margin-top: 3%; color: black; font-size: 50px;}\n"\
 "	</style>\n"\
 "	<meta charset=\"UTF-8\">\n"\
 "	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"\
@@ -16,6 +17,7 @@ htmlPage = "<!DOCTYPE html>\n"\
 "</head>\n"\
 "<body>\n"\
 "		<h1>Error " + error + "</h1>\n"\
+"		<h2>" + msg + "</h2>\n"\
 "</body>\n"\
 "</html>";
 	return htmlPage;
@@ -55,4 +57,20 @@ int	matchLocationAndUri(std::vector<Location> location, std::string uriPath)
 		}
 	}
 	return index;
+}
+
+std::string errRespone(int err, std::map<int, std::string> errs)
+{
+	std::string firstLine = "HTTP/1.1 " + std::to_string(err) + " " + errs[err] + "\n";
+	std::string contentType = "Content-Type: text/html\n";
+	std::string contentLength = "Content-Length: " + std::to_string(errorPage(std::to_string(err), errs[err]).size()) + "\n";
+	std::string body = "\n" + errorPage(std::to_string(err), errs[err]);
+	return firstLine + contentType + contentLength + body;
+}
+
+std::string redirect(int err, std::map<int, std::string> errs, std::string link)
+{
+	std::string firstLine = "HTTP/1.1 " + std::to_string(err) + " " + errs[err] + "\n";
+	std::string location = "Location: " + link + "\n\n";
+	return firstLine + location;
 }

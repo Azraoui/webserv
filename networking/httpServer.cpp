@@ -6,13 +6,14 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 18:40:39 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/05 19:07:46 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/httpServer.hpp"
 
 std::map<int, std::string> status_code; // first : key | second : string value of error 
+std::map<std::string, std::string> mime_type;
 
 HttpServer::HttpServer(const std::vector<Vserver> &servers) : _servers(servers) {
     this->_loadServers();
@@ -61,9 +62,89 @@ void fill_map_error_value()
     status_code.insert(std::make_pair(501, "Not Implemented"));
 }
 
+void fill_map_mime_type()
+{
+    mime_type.insert(std::make_pair("aac", "audio/aac"));
+    mime_type.insert(std::make_pair("abw", "application/x-abiword"));
+    mime_type.insert(std::make_pair("arc", "application/x-freearc"));
+    mime_type.insert(std::make_pair("avi", "video/x-msvideo"));
+    mime_type.insert(std::make_pair("azw", "Bad application/vnd.amazon.ebook"));
+    mime_type.insert(std::make_pair("bin", "application/octet-stream"));
+    mime_type.insert(std::make_pair("bmp", "application/x-bzip"));
+    mime_type.insert(std::make_pair("bz", "application/x-bzip"));
+    mime_type.insert(std::make_pair("bz2", "application/x-bzip2"));
+    mime_type.insert(std::make_pair("csh", "application/x-csh"));
+    mime_type.insert(std::make_pair("css", "text/css"));
+    mime_type.insert(std::make_pair("csv", "text/csv"));
+    mime_type.insert(std::make_pair("doc", "application/msword"));
+    mime_type.insert(std::make_pair("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+    mime_type.insert(std::make_pair("eot", "application/vnd.ms-fontobject"));
+    mime_type.insert(std::make_pair("epub", "application/epub+zip"));
+    mime_type.insert(std::make_pair("gz", "application/gzip"));
+    mime_type.insert(std::make_pair("gif", "image/gif"));
+    mime_type.insert(std::make_pair("htm", "text/html"));
+    mime_type.insert(std::make_pair("html", "text/html"));
+    mime_type.insert(std::make_pair("ico", "image/vnd.microsoft.icon"));
+    mime_type.insert(std::make_pair("ics", "text/calendar"));
+    mime_type.insert(std::make_pair("jar", "application/java-archive"));
+    mime_type.insert(std::make_pair("jpeg", "image/jpeg"));
+    mime_type.insert(std::make_pair("jpg", "image/jpeg"));
+    mime_type.insert(std::make_pair("js", "text/javascript"));
+    mime_type.insert(std::make_pair("json", "application/json"));
+    mime_type.insert(std::make_pair("jsonld", "application/ld+json"));
+    mime_type.insert(std::make_pair("mid", "audio/midi audio/x-midi"));
+    mime_type.insert(std::make_pair("midi", "audio/midi audio/x-midi"));
+    mime_type.insert(std::make_pair("mjs", "text/javascript"));
+    mime_type.insert(std::make_pair("mp3", "audio/mpeg"));
+    mime_type.insert(std::make_pair("mpeg", "video/mpeg"));
+    mime_type.insert(std::make_pair("mpkg", "application/vnd.apple.installer+xml"));
+    mime_type.insert(std::make_pair("odp", "application/vnd.oasis.opendocument.presentation"));
+    mime_type.insert(std::make_pair("ods", "application/vnd.oasis.opendocument.spreadsheet"));
+    mime_type.insert(std::make_pair("odt", "application/vnd.oasis.opendocument.text"));
+    mime_type.insert(std::make_pair("oga", "audio/ogg"));
+    mime_type.insert(std::make_pair("ogv", "video/ogg"));
+    mime_type.insert(std::make_pair("ogx", "application/ogg"));
+    mime_type.insert(std::make_pair("opus", "audio/opus"));
+    mime_type.insert(std::make_pair("otf", "font/otf"));
+    mime_type.insert(std::make_pair("png", "image/png"));
+    mime_type.insert(std::make_pair("pdf", "application/pdf"));
+    mime_type.insert(std::make_pair("php", "application/x-httpd-php"));
+    mime_type.insert(std::make_pair("ppt", "application/vnd.ms-powerpoint"));
+    mime_type.insert(std::make_pair("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"));
+    mime_type.insert(std::make_pair("rar", "application/vnd.rar"));
+    mime_type.insert(std::make_pair("rtf", "application/rtf"));
+    mime_type.insert(std::make_pair("sh", "application/x-sh"));
+    mime_type.insert(std::make_pair("svg", "image/svg+xml"));
+    mime_type.insert(std::make_pair("swf", "application/x-shockwave-flash"));
+    mime_type.insert(std::make_pair("tar", "application/x-tar"));
+    mime_type.insert(std::make_pair("tif", "image/tiff"));
+    mime_type.insert(std::make_pair("tiff", "image/tiff"));
+    mime_type.insert(std::make_pair("ts", "video/mp2t"));
+    mime_type.insert(std::make_pair("ttf", "font/ttf"));
+    mime_type.insert(std::make_pair("txt", "text/plain"));
+    mime_type.insert(std::make_pair("vsd", "application/vnd.visio"));
+    mime_type.insert(std::make_pair("wav", "audio/wav"));
+    mime_type.insert(std::make_pair("weba", "audio/webm"));
+    mime_type.insert(std::make_pair("webm", "video/webm"));
+    mime_type.insert(std::make_pair("webp", "image/webp"));
+    mime_type.insert(std::make_pair("woff", "font/woff"));
+    mime_type.insert(std::make_pair("woff2", "font/woff2"));
+    mime_type.insert(std::make_pair("xhtml", "application/xhtml+xml"));
+    mime_type.insert(std::make_pair("xls", "application/vnd.ms-excel"));
+    mime_type.insert(std::make_pair("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    mime_type.insert(std::make_pair("xml", "application/xml"));
+    //  mime_type.insert(std::make_pair("xml", "text/xml"));
+    mime_type.insert(std::make_pair("xul", "application/vnd.mozilla.xul+xml"));
+    mime_type.insert(std::make_pair("zip", "application/zip"));
+    mime_type.insert(std::make_pair("3gp", "video/3gpp"));
+    mime_type.insert(std::make_pair("3gp2", "video/3gpp2"));
+    mime_type.insert(std::make_pair("7z", "application/x-7z-compressed"));
+}
+
 void    HttpServer::runServers(void)
 {
     fill_map_error_value(); // FILL STATUS_CODE MAP
+    fill_map_mime_type();
     _selectUtility.clear();
     for (size_t i = 0; i < _serverSock.size(); i++)
     {
@@ -160,32 +241,25 @@ void    HttpServer::_handling_method_allowed_error(ReadRequest request, Vserver 
 }
 void	HttpServer::_responseServer(int clientFd, int i)
 {
-    _selectUtility.getRequest(clientFd).handling_response_errors();
-    _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // _selectUtility.getRequest(clientFd).handling_response_errors();
+    // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
-    // write(clientFd, msg.c_str(), msg.size());
+        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd)
-    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-    //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    _selectUtility.getRequest(clientFd).handling_response_errors();
-    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
-    write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
     _clientsSock.erase(_clientsSock.begin() + i);
     _selectUtility.erase(clientFd);
 }
 
-void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
+void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clientFd)
 {
     int i;
-    std::string rootAndUri;
+    std::string rootAndUri, msg;
+    struct stat	buf;
 
-    // server._locations[i]._allowed_methods;
     i = matchLocationAndUri(server._locations, request.getUriPath());
     if (i != -1)
     {
@@ -195,6 +269,39 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
             rootAndUri = server._locations[i]._rootPath + temp;
         else // i should handle in config file if i don't find root in server and in location -> throw error
             rootAndUri = server._rootPath + temp;
+        if (!lstat(rootAndUri.c_str(), &buf))
+        {
+            if (!(buf.st_mode & S_IREAD))
+            {
+                msg = errRespone(403, status_code);
+                write(clientFd, msg.c_str(), msg.size());
+            }
+            else if (buf.st_mode & S_IFDIR)
+            {
+                if (rootAndUri[rootAndUri.size() - 1] != '/')
+                {
+                    msg = redirect(301, status_code, request.getUriPath() + '/');
+                    write(clientFd, msg.c_str(), msg.size());
+                }
+                else
+                {
+                    for (size_t j = 0; j < server._locations[i]._index.size(); j++)
+                    {
+                        std::cout << "i was here\n";
+                        if (!lstat(server._locations[i]._index[j].c_str(), &buf) && !(buf.st_mode & S_IFDIR))
+                        {
+                            std::cout << server._locations[i]._index[j] << std::endl;
+                            // std::cout << server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".")) << std::endl;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            msg = errRespone(404, status_code);
+            write(clientFd, msg.c_str(), msg.size());
+        }
     }
-    std::cout << rootAndUri << std::endl;
 }

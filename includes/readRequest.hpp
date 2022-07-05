@@ -144,7 +144,8 @@ class ReadRequest
 		};
 
 		void setIsBadRequest(std::pair<bool, int> ret){
-			_is_bad_request = ret;
+			_is_bad_request.first = ret.first;
+			_is_bad_request.second = ret.second;
 		};
 		bool getifrequestFinished() {
 			return _isRequestFinished;
