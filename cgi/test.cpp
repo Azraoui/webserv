@@ -40,7 +40,6 @@ void cgiexecute(std::string sriptname, char **env)
         waitpid(pid, &wstatus, 0);
         if (WIFEXITED(wstatus))
             cgi_error = WEXITSTATUS(wstatus);
-        std::cout << cgi_error << std::endl;
     }
 }
 

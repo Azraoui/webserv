@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 00:36:44 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 15:10:02 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ void    HttpServer::runServers(void)
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
                 int fd = _clientsSock[i].getClientFd();
-                std::cout << "uriPath = " + _selectUtility.getRequest(fd).getUriPath() << std::endl;
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                     _response(fd, i);
                 // reponse here
@@ -132,18 +131,31 @@ void	HttpServer::_acceptRequest(int position)
 
 void	HttpServer::_response(int clientFd, int i)
 {
-    // _selectUtility.
-    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-    //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
-    write(clientFd, test.c_str(), test.size());
+    if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
+    // write(clientFd, msg.c_str(), msg.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);
     _clientsSock.erase(_clientsSock.begin() + i);
     _selectUtility.erase(clientFd);
 }
 
-// void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
-// {
-    
-// }
+void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
+{
+    int i;
+    std::string rootAndUri;
+
+    // server._locations[i]._allowed_methods;
+    i = matchLocationAndUri(server._locations, request.getUriPath());
+    if (i != -1)
+    {
+        std::string temp = request.getUriPath();
+        temp = temp.erase(0, server._locations[i]._locationPath.size());
+        if (!server._locations[i]._rootPath.empty())
+            rootAndUri = server._locations[i]._rootPath + temp;
+        else // i should handle in config file if i don't find root in server and in location -> throw error
+            rootAndUri = server._rootPath + temp;
+    }
+    std::cout << rootAndUri << std::endl;
+}

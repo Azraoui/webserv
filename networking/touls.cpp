@@ -7,7 +7,7 @@ htmlPage = "<!DOCTYPE html>\n"\
 "<html lang=\"en\">\n"\
 "<head>\n"\
 "	<style>\n"\
-"		h1 {text-align: center; margin-top: 25%; color: red; font-size: 100px;}\n"\
+"		h1 {text-align: center; margin-top: 20%; color: red; font-size: 100px;}\n"\
 "	</style>\n"\
 "	<meta charset=\"UTF-8\">\n"\
 "	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"\
@@ -19,4 +19,40 @@ htmlPage = "<!DOCTYPE html>\n"\
 "</body>\n"\
 "</html>";
 	return htmlPage;
+}
+
+int	matchLocationAndUri(std::vector<Location> location, std::string uriPath)
+{
+	std::string temp;
+	int			count = INT_MAX, j;
+	int			index = -1;
+
+	for (size_t i = 0; i < location.size(); i++)
+	{
+		temp = uriPath;
+		j = 0;
+		if (location[i]._locationPath == uriPath)
+			return i;
+		while (!temp.empty())
+		{
+			if (temp.find_last_of("/") == temp.npos)
+				break;
+			if (temp.find_last_of("/") + 1 != temp.size())
+				temp.erase(temp.find_last_of("/") + 1);
+			else
+				temp.erase(temp.find_last_of("/"));
+			j++;
+			if (temp == location[i]._locationPath)
+				break;
+		}
+		if (j && !temp.empty())
+		{
+			if (j < count)
+			{
+				count = j;
+				index = i;
+			}
+		}
+	}
+	return index;
 }

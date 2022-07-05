@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
+#    By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/07/05 00:01:45 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/07/05 01:13:46 by houbeid          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,13 +16,15 @@ SRC = ./main.cpp ./parser/parser.cpp \
 		./networking/httpServer.cpp ./networking/socket.cpp \
 		./networking/serverRequest.cpp ./networking/readRequest.cpp \
 		./networking/touls.cpp \
-		./networking/serverResponse.cpp 
+		./networking/serverResponse.cpp \
+		./cgi/cgi.cpp
 
 INC = ./includes/parser.hpp ./includes/httpServer.hpp \
 		./includes/socket.hpp ./includes/serverRequest.hpp \
 		./includes/readRequest.hpp \
 		./includes/touls.hpp \
-		./includes/serverResponse.hpp 
+		./includes/serverResponse.hpp \
+		./cgi/cgi.hpp
 
 FLAG = c++ -Wall -Wextra -Werror -std=c++98
 
