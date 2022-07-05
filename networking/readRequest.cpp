@@ -6,7 +6,7 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 14:07:28 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/05 15:09:09 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,5 +212,6 @@ void	ReadRequest::handling_response_errors()
 		_is_bad_request.first = true;
 		_is_bad_request.second = 414;
 	}
+	
 	
 }
