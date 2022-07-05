@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 00:20:11 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 00:36:44 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ void    HttpServer::runServers(void)
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
                 int fd = _clientsSock[i].getClientFd();
+                std::cout << "uriPath = " + _selectUtility.getRequest(fd).getUriPath() << std::endl;
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
                     _response(fd, i);
                 // reponse here
