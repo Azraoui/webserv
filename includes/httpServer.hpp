@@ -32,6 +32,7 @@ class HttpServer
 		void	_acceptRequest(int position);
 		void	_handleGetMethod(ReadRequest request, Vserver &server);
 		void	_responseServer(int clientFd, int i);
+		void	_handling_method_allowed_error(ReadRequest request, Vserver &server);
 	public:
 		HttpServer(const std::vector<Vserver> &servers);
 		~HttpServer();

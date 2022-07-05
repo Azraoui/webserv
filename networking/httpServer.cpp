@@ -6,7 +6,7 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 15:08:18 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/05 16:01:52 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,43 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.set_maxFd(tmp.getClientFd());
     _selectUtility.insertClient(tmp.getClientFd());
 }
-
+void    HttpServer::_handling_method_allowed_error(ReadRequest request, Vserver &server)
+{
+    int pos_loc;
+    Location loc;
+    std::set<std::string>::iterator it;
+    
+    pos_loc = matchLocationAndUri(server._locations, request.getUriPath());
+    loc = server._locations[pos_loc];
+    for (it = loc._allowed_methods.begin(); it != loc._allowed_methods.end(); it++)
+    {
+        // std::cout << "--------------" << std::endl;
+        // std::cout << *it << " | " << request.getMethod() << std::endl;
+        if (*it == request.getMethod())
+            return;
+        // std::cout << "--------------" << std::endl;
+    }
+    for (it = server._allowed_methods.begin(); it != server._allowed_methods.end(); it++)
+    {
+        // std::cout << "--------------------------------------------------------\n" << std::endl;
+        // std::cout << "--------------" << std::endl;
+        // std::cout << *it << " | " << request.getMethod() << std::endl;
+        if (*it == request.getMethod())
+            return;
+        // std::cout << "--------------" << std::endl;
+    }
+    request.setIsBadRequest(std::make_pair(true, 405));
+    std::cout << "ERROR 405 !!" << std::endl;
+}
 void	HttpServer::_responseServer(int clientFd, int i)
 {
+    _selectUtility.getRequest(clientFd).handling_response_errors();
+    _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    
+    if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
+    // write(clientFd, msg.c_str(), msg.size());
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd)
     // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
@@ -146,7 +180,21 @@ void	HttpServer::_responseServer(int clientFd, int i)
     _selectUtility.erase(clientFd);
 }
 
-// void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
-// {
-    
-// }
+void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
+{
+    int i;
+    std::string rootAndUri;
+
+    // server._locations[i]._allowed_methods;
+    i = matchLocationAndUri(server._locations, request.getUriPath());
+    if (i != -1)
+    {
+        std::string temp = request.getUriPath();
+        temp = temp.erase(0, server._locations[i]._locationPath.size());
+        if (!server._locations[i]._rootPath.empty())
+            rootAndUri = server._locations[i]._rootPath + temp;
+        else // i should handle in config file if i don't find root in server and in location -> throw error
+            rootAndUri = server._rootPath + temp;
+    }
+    std::cout << rootAndUri << std::endl;
+}
