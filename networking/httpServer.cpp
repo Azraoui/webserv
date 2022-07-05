@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 02:37:05 by houbeid          ###   ########.fr       */
+/*   Updated: 2022/07/05 13:30:00 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,12 @@ void    HttpServer::runServers(void)
             if (_selectUtility.fd_isset(_clientsSock[i].getClientFd(), "write"))
             {
                 int fd = _clientsSock[i].getClientFd();
-                //if (_selectUtility.getRequest(fd).getUriPath().find(".php") != std::string::npos)
-                    //cgi cgi( _selectUtility.getRequest(fd));
                 if (_selectUtility.getRequest(fd).getifrequestFinished())
-                    _response(fd, i);
+                {
+                    // _handling_response_errors(); // need readRequest
+                    _selectUtility.getRequest(fd).handling_response_errors();
+                    _responseServer(fd, i);
+                }
                 // reponse here
             }
         }
@@ -131,12 +133,13 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.insertClient(tmp.getClientFd());
 }
 
-void	HttpServer::_response(int clientFd, int i)
+void	HttpServer::_responseServer(int clientFd, int i)
 {
-    // _selectUtility.
+    // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // _selectUtility.getRequest(clientFd)
     // if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
     //     _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    std::string test = "HTTP/1.1 200 OK\r\n";
+    std::string test = "HTTP/1.1 301 OK\nLocation: https://google.com/\n\n";
     write(clientFd, test.c_str(), test.size());
     FD_CLR(clientFd, &_selectUtility._master);
     close(clientFd);

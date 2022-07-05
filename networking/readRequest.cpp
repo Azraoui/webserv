@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 00:14:27 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 14:07:28 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,4 +191,26 @@ bool	ReadRequest::getConnection(void) const
 
 std::string		ReadRequest::getContentType(void) const {
 	return this->_contentType;
+}
+
+void	ReadRequest::handling_response_errors()
+{
+	std::cout << "------------------------------" << std::endl;
+	std::size_t found = _uriPath.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%");
+	if (found!=std::string::npos)
+	{
+		_is_bad_request.first = true;
+		_is_bad_request.second = 400;
+	}
+	if (!_isChunked && !_bodyFileLength && _method == "POST")
+	{
+		_is_bad_request.first = true;
+		_is_bad_request.second = 400;
+	}
+	if (_uriPath.length() > 2048)
+	{
+		_is_bad_request.first = true;
+		_is_bad_request.second = 414;
+	}
+	
 }

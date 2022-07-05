@@ -5,8 +5,8 @@
 # include "./parser.hpp" // AbdAllah Vserver struct
 # include "./socket.hpp"
 # include "./serverRequest.hpp"
+# include "./serverResponse.hpp"
 # include "./touls.hpp"
-#include "../cgi/cgi.hpp"
 
 # include <string>
 # include <vector>
@@ -24,14 +24,14 @@ class HttpServer
 		std::vector<Socket>				_serverSock;
 		std::vector<Socket>				_clientsSock;
 		ServerRequest					_selectUtility;
+		// ServerResponse					_response;
 
 		//methods
 		void	_loadServers(void);
 		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
-		void	_response(int clientFd, int i);
 		void	_handleGetMethod(ReadRequest request, Vserver &server);
-
+		void	_responseServer(int clientFd, int i);
 	public:
 		HttpServer(const std::vector<Vserver> &servers);
 		~HttpServer();

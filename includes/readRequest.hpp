@@ -23,7 +23,7 @@ class ReadRequest
 		std::map<std::string, std::string>  _headerDirectives;
 		std::string                         _queryParams;
 		int                                 _bodyFileFd;
-		size_t                              _bodyFileLength;
+		size_t                              _bodyFileLength; // Content-Length
 		bool                                _isRequestFinished;
 		bool								_isChunked;
 		size_t                              _statusCode;
@@ -33,7 +33,8 @@ class ReadRequest
 		size_t								_chunkSize;
 		std::string							_chunkContent;
 		void								_parseHeader(void);
-		std::pair<bool, int>				_is_bad_request; // first : true if there is an error | second : value of error 
+		std::pair<bool, int>				_is_bad_request; // first : true if there is an error | second : value of error
+
 
 	public:
 		ReadRequest();
@@ -43,6 +44,9 @@ class ReadRequest
 		void			generateFileName(int fd);
 		void			parsing(char *content, int fd, ssize_t contentSize);
 		std::string		getContentType(void) const;
+
+		void			handling_response_errors();
+
 		std::string &getHost() {
 			return _host;
 		};

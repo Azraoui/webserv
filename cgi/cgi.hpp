@@ -19,14 +19,13 @@ class cgi
     public:
         int fd_input;
         int fd_output;
-        char *args[3];
+        char *args[2];
         ReadRequest *request;
-        std::string query;
         std::string file;
         int         cgi_error;
         
         cgi();
-        cgi(ReadRequest request);
+        cgi(ReadRequest &request);
         ~cgi();
         void    setenvcgi(void);
         void    executecgi(void);
