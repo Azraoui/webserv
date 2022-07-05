@@ -13,6 +13,7 @@
 # include <map>
 # include <sys/select.h>
 # include <iostream>
+# include <sys/stat.h>
 
 # define BUFFER_LENGTH 1024
 
@@ -30,7 +31,7 @@ class HttpServer
 		void	_loadServers(void);
 		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
-		void	_handleGetMethod(ReadRequest request, Vserver &server);
+		void	_handleGetMethod(ReadRequest request, Vserver &server, int clientFd);
 		void	_responseServer(int clientFd, int i);
 	public:
 		HttpServer(const std::vector<Vserver> &servers);

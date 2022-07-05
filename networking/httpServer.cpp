@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 15:15:51 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/05 16:08:16 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	HttpServer::_acceptRequest(int position)
 void	HttpServer::_responseServer(int clientFd, int i)
 {
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+        _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
     // std::string msg = "HTTP/1.1 500 " + status_code.at(500) + "\n" + "Content-Type: text/html\n"+ "Content-Length: " + std::to_string(errorPage("500").size()) + "\n\n" + errorPage("500");
     // write(clientFd, msg.c_str(), msg.size());
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
@@ -151,12 +151,12 @@ void	HttpServer::_responseServer(int clientFd, int i)
     _selectUtility.erase(clientFd);
 }
 
-void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
+void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clientFd)
 {
     int i;
-    std::string rootAndUri;
+    std::string rootAndUri, msg;
+    struct stat	buf;
 
-    // server._locations[i]._allowed_methods;
     i = matchLocationAndUri(server._locations, request.getUriPath());
     if (i != -1)
     {
@@ -167,5 +167,19 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server)
         else // i should handle in config file if i don't find root in server and in location -> throw error
             rootAndUri = server._rootPath + temp;
     }
-    std::cout << rootAndUri << std::endl;
+    if (!lstat(rootAndUri.c_str(), &buf))
+    {
+        if (buf.st_mode & S_IXUSR)
+        {
+            msg = errRespone(403, status_code);
+            write(clientFd, msg.c_str(), msg.size());
+        }
+        else if (buf.st_mode & S_IFDIR)
+            std::cout << "yes" << std::endl;
+    }
+    else
+    {
+        msg = errRespone(404, status_code);
+        write(clientFd, msg.c_str(), msg.size());
+    }
 }
