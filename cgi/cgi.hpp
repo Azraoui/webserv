@@ -11,21 +11,24 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "../includes/readRequest.hpp"
+#include "../includes/parser.hpp"
 
 extern char **environ;
 
 class cgi 
 {
+    cgi();
+
     public:
         int fd_input;
         int fd_output;
-        char *args[2];
-        ReadRequest *request;
+        char *args[3];
+        ReadRequest* request;
         std::string file;
         int         cgi_error;
-        
-        cgi();
-        cgi(ReadRequest &request);
+        std::string query_params;
+                
+        cgi(ReadRequest request);
         ~cgi();
         void    setenvcgi(void);
         void    executecgi(void);

@@ -7,6 +7,7 @@
 # include "./serverRequest.hpp"
 # include "./serverResponse.hpp"
 # include "./touls.hpp"
+#include "../cgi/cgi.hpp"
 
 # include <string>
 # include <vector>

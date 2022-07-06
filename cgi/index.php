@@ -1,3 +1,3 @@
 <?php
-    echo ("your username is ".$_POST['user'])
+    echo ("your username is ".$_GET['user'])
 ?>

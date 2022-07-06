@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 19:09:34 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/06 04:36:57 by houbeid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,8 +241,12 @@ void    HttpServer::_handling_method_allowed_error(ReadRequest request, Vserver 
 }
 void	HttpServer::_responseServer(int clientFd, int i)
 {
+    std::string Method = _selectUtility.getRequest(clientFd).getMethod();
+    std::string Path = _selectUtility.getRequest(clientFd).getUriPath();
     // _selectUtility.getRequest(clientFd).handling_response_errors();
     // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
+        cgi cgi(_selectUtility.getRequest(clientFd));
     
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
