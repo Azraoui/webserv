@@ -6,7 +6,7 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 15:50:38 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/06 20:15:26 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,17 @@ void    HttpServer::_handling_method_allowed_error(ReadRequest &request, Vserver
     request.setIsBadRequest(std::make_pair(true, 405));
     // std::cout << "ERROR 405 !!" << request.getIsBadRequest().first << " | " << request.getIsBadRequest().second << std::endl;
 }
+
+void handling_upload(std::string request_file_name, std::string upload_path)
+{
+    // std::string new_str = "cgi_" + request_file_name;
+    std::cout << request_file_name << std::endl;
+    std::ifstream  src(request_file_name.c_str(), std::ios::binary);
+    std::ofstream  dst(upload_path.c_str(), std::ios::binary);
+    dst << src.rdbuf();
+
+}
+
 void	HttpServer::_responseServer(int clientFd, int i)
 {
     std::string Method = _selectUtility.getRequest(clientFd).getMethod();
@@ -240,10 +251,10 @@ void	HttpServer::_responseServer(int clientFd, int i)
     _selectUtility.getRequest(clientFd).handling_response_errors();
     _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
-    // std::cout << "ERROR 405 !!" << std::endl;
     if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
         cgi cgi(_selectUtility.getRequest(clientFd));
-    
+    // if (Method == "POST")
+        // handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), // upload_path);
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
