@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverRequest.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/05 16:21:19 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/06 15:29:16 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,11 +91,12 @@ bool	ServerRequest::readData(int fd)
 	return (true);
 }
 
-ReadRequest  ServerRequest::getRequest(int fd) const
+ReadRequest  &ServerRequest::getRequest(int fd)
 {
-	if (_readRequest.find(fd) != _readRequest.end())
-		return _readRequest.at(fd);
-	return ReadRequest();
+	return _readRequest[fd];
+	// if (_readRequest.find(fd) != _readRequest.end())
+	// 	return _readRequest.at(fd);
+	// return ReadRequest();
 }
 
 void	ServerRequest::erase(int fd)

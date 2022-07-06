@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 04:36:57 by houbeid          ###   ########.fr       */
+/*   Updated: 2022/07/06 15:50:38 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,40 +211,36 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.set_maxFd(tmp.getClientFd());
     _selectUtility.insertClient(tmp.getClientFd());
 }
-void    HttpServer::_handling_method_allowed_error(ReadRequest request, Vserver &server)
+void    HttpServer::_handling_method_allowed_error(ReadRequest &request, Vserver &server)
 {
     int pos_loc;
     Location loc;
     std::set<std::string>::iterator it;
     
     pos_loc = matchLocationAndUri(server._locations, request.getUriPath());
-    loc = server._locations[pos_loc];
+    loc = server._locations[pos_loc];   
     for (it = loc._allowed_methods.begin(); it != loc._allowed_methods.end(); it++)
     {
-        // std::cout << "--------------" << std::endl;
-        // std::cout << *it << " | " << request.getMethod() << std::endl;
         if (*it == request.getMethod())
             return;
-        // std::cout << "--------------" << std::endl;
     }
     for (it = server._allowed_methods.begin(); it != server._allowed_methods.end(); it++)
     {
-        // std::cout << "--------------------------------------------------------\n" << std::endl;
-        // std::cout << "--------------" << std::endl;
-        // std::cout << *it << " | " << request.getMethod() << std::endl;
         if (*it == request.getMethod())
             return;
-        // std::cout << "--------------" << std::endl;
     }
     request.setIsBadRequest(std::make_pair(true, 405));
-    std::cout << "ERROR 405 !!" << std::endl;
+    // std::cout << "ERROR 405 !!" << request.getIsBadRequest().first << " | " << request.getIsBadRequest().second << std::endl;
 }
 void	HttpServer::_responseServer(int clientFd, int i)
 {
     std::string Method = _selectUtility.getRequest(clientFd).getMethod();
     std::string Path = _selectUtility.getRequest(clientFd).getUriPath();
-    // _selectUtility.getRequest(clientFd).handling_response_errors();
-    // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    
+    _selectUtility.getRequest(clientFd).handling_response_errors();
+    _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
+    // std::cout << "ERROR 405 !!" << std::endl;
     if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
         cgi cgi(_selectUtility.getRequest(clientFd));
     
