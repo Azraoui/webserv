@@ -4,8 +4,9 @@ cgi::cgi() {
 
 }
 
-cgi::cgi(ReadRequest request)
+cgi::cgi(ReadRequest request, std::string cgiPath): _cgiPath(cgiPath)
 {
+    // bedel dak path li generiti b _cgiPath
     this->request = &request;
     std::string path = request.getUriPath();
     std::vector<std::string> query;
@@ -50,7 +51,7 @@ void    cgi::setenvcgi(void)
 void    cgi::executecgi(void)
 {
     int pid;
-    int wstatus;
+    int wstatus = 0;
 
     pid = fork();
     if (pid == -1)

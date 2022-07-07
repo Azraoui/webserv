@@ -74,3 +74,30 @@ std::string redirect(int err, std::map<int, std::string> errs, std::string link)
 	std::string location = "Location: " + link + "\n\n";
 	return firstLine + location;
 }
+
+std::string sendGetResponse(std::string indexPath, std::string contentType)
+{
+	std::string body;
+	std::string firstLine = "HTTP/1.1 200 OK\n";
+	std::string _contentType = "Content-Type: " + contentType + "\n";
+	std::ifstream file;
+	file.open(indexPath);
+	std::string tmp;
+	while(!file.eof())
+	{
+		file >> tmp;
+		body.append(tmp);
+	}
+	std::cout << "body = " << body << std::endl;
+	std::string contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
+	return firstLine + _contentType + contentLength + body;
+
+}
+
+std::string	getMimeType(std::string key, std::map<std::string, std::string> mimeMap)
+{
+	if (mimeMap.find(key) != mimeMap.end())
+		return mimeMap[key];
+	else
+		return "application/octet-stream";
+}

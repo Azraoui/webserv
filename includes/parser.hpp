@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 15:55:45 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/06/30 22:50:50 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/07 01:37:34 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ struct Location
 	std::string                                         _maxBodySize;
 	std::string                                         _uploadPath;
 
-	std::vector<std::string>                            _cgi;
+	std::map<std::string, std::string>                  _cgi;
 	std::vector<std::string>                            _index;
 	std::vector<std::string>                            _serverNames;
 	std::set<std::pair<std::string, std::string> >      _errorPage;
@@ -56,7 +56,7 @@ struct Vserver
 		
 		std::set<std::pair<std::string, std::string> >      _errorPage;
 		std::pair<std::string, std::string>                 _redirection;
-		std::vector<std::string>                            _cgi;
+
 		std::vector<std::string>                            _index;
 		std::set<std::string>                           	_allowed_methods;
 
