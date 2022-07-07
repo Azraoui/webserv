@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 20:15:26 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/07 00:26:37 by houbeid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,7 @@ void	HttpServer::_responseServer(int clientFd, int i)
     _selectUtility.getRequest(clientFd).handling_response_errors();
     _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
+   // std::cout << "filename : " << _selectUtility.getRequest(clientFd).getRequestFileName() << std::endl;
     if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
         cgi cgi(_selectUtility.getRequest(clientFd));
     // if (Method == "POST")
