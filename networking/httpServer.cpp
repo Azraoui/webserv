@@ -6,11 +6,12 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 20:15:26 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/08 18:14:51 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/httpServer.hpp"
+#include "dirent.h"
 
 std::map<int, std::string> status_code; // first : key | second : string value of error 
 std::map<std::string, std::string> mime_type;
@@ -243,6 +244,67 @@ void handling_upload(std::string request_file_name, std::string upload_path)
 
 }
 
+std::string	 body_auto_index(std::string current_path)
+{
+    // std::string ret_body;
+    std::string directories;
+    std::string files;
+    DIR *dir = opendir(current_path.c_str());
+    struct dirent *ent;
+    struct stat ret_stat;
+    std::string str;
+    
+    while ((ent = readdir(dir)) != NULL)
+    {
+        str = ent->d_name;
+        stat(ent->d_name, &ret_stat);
+        if (str == ".")
+            continue;
+        if (str == "..")
+        {
+            directories = "<a href = " + current_path + "/" + ">" + current_path + "</a>";
+            continue;
+        }
+        if (ret_stat.st_mode & S_IFDIR)
+        {
+            std::cout << "------------------------------" << std::endl;
+            std::cout << "directory : " << str << std::endl;
+            directories += "\n<a href = " + str + "/" + ">" + str + "</a>";
+        }
+        else if (ret_stat.st_mode & S_IFREG)
+        {
+            std::cout << "------------------------------" << std::endl;
+            std::cout << "file : " << str << std::endl;
+            files += "\n<a href = " + str + ">" + str + "</a>";
+        }
+    }
+    closedir (dir);
+    return (directories + files);
+}
+
+std::string	 handling_auto_index(std::string current_path)
+{
+    std::string htmlPage;
+    htmlPage = "<!DOCTYPE html>\n"\
+    "<html lang=\"en\">\n"\
+    "<head>\n"\
+    "	<style>\n"\
+    "		h1 {text-align: center; margin-top: 10%; color: red; font-size: 70px;}\n"\
+    "		h2 {text-align: center; margin-top: 3%; color: black; font-size: 50px;}\n"\
+    "	</style>\n"\
+    "	<meta charset=\"UTF-8\">\n"\
+    "	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"\
+    "	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"\
+    "	<title>Error</title>\n"\
+    "</head>\n"\
+    "<body>\n"\
+        "<h1>Index of: " + current_path + "</h1>\n"\
+        + body_auto_index(current_path) +
+    "</body>\n"\
+    "</html>";
+    return htmlPage;
+}
+
 void	HttpServer::_responseServer(int clientFd, int i)
 {
     std::string Method = _selectUtility.getRequest(clientFd).getMethod();
@@ -253,9 +315,9 @@ void	HttpServer::_responseServer(int clientFd, int i)
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
     if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
         cgi cgi(_selectUtility.getRequest(clientFd));
-    // if (Method == "POST")
-        // handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), // upload_path);
-    if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+    if (Method == "POST")
+        handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
+    if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd)
@@ -264,6 +326,12 @@ void	HttpServer::_responseServer(int clientFd, int i)
     _clientsSock.erase(_clientsSock.begin() + i);
     _selectUtility.erase(clientFd);
 }
+
+// void  HttpServer::handling_post()
+// {
+    
+// }
+
 
 void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clientFd)
 {
@@ -312,6 +380,7 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                         if (server._locations[i]._autoindex == "on")
                         {
                             // handle auto index
+                            // handling_auto_index("/Users/yer-raki/Desktop/webserv"); /* current_path */
                         }
                         else
                         {
@@ -328,6 +397,7 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
         }
         else
         {
+            // msg = handling_auto_index("/Users/yer-raki/Desktop/webserv");
             msg = errRespone(404, status_code);
             write(clientFd, msg.c_str(), msg.size());
         }
