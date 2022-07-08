@@ -6,7 +6,7 @@
 /*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/08 18:14:51 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/08 18:19:58 by yer-raki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,7 @@ void	HttpServer::_acceptRequest(int position)
     _selectUtility.set_maxFd(tmp.getClientFd());
     _selectUtility.insertClient(tmp.getClientFd());
 }
+
 void    HttpServer::_handling_method_allowed_error(ReadRequest &request, Vserver &server)
 {
     int pos_loc;
@@ -312,12 +313,19 @@ void	HttpServer::_responseServer(int clientFd, int i)
     
     _selectUtility.getRequest(clientFd).handling_response_errors();
     _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    handling_auto_index("/Users/yer-raki/Desktop/webserv");
+    
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
     if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
-        cgi cgi(_selectUtility.getRequest(clientFd));
+        cgi cgi(_selectUtility.getRequest(clientFd), Path);
     if (Method == "POST")
         handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
-    if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
+    // if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
+    // if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
+    //     cgi cgi(_selectUtility.getRequest(clientFd), );
+    // if (Method == "POST")
+        // handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), // upload_path);
+    if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
         _handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
     // ServerResponse response(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
     // _selectUtility.getRequest(clientFd)
@@ -355,9 +363,9 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                 msg = errRespone(403, status_code);
                 write(clientFd, msg.c_str(), msg.size());
             }
-            else if (buf.st_mode & S_IFDIR)
+            else if (buf.st_mode & S_IFDIR) // if path is directory
             {
-                if (rootAndUri[rootAndUri.size() - 1] != '/')
+                if (rootAndUri[rootAndUri.size() - 1] != '/' && request.getUriPath() != "/")
                 {
                     msg = redirect(301, status_code, request.getUriPath() + '/');
                     write(clientFd, msg.c_str(), msg.size());
@@ -390,7 +398,8 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     }
                     else
                     {
-                        
+                        msg = sendGetResponse(indexPath, getMimeType(extension, mime_type));
+                        write(clientFd, msg.c_str(), msg.size());
                     }
                 }
             }

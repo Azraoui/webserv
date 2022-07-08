@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/04 17:31:20 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/07 01:39:34 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,19 +236,17 @@ void	getReturn(std::vector<std::string> &tokens, bool const &insideLocation, std
 
 void	getCGI(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
 {
-	if (tokens.size() < 2)
+	if (tokens.size() != 3)
 		exitError("error near directive <" + tokens[0] + ">");
 	if (insideLocation)
 	{
 		if (!_serverConfig[i_S]._locations[i_L]._cgi.empty())
 			exitError("error to many <" + tokens[0] + "> inside location block");
-		_serverConfig[i_S]._locations[i_L]._cgi.assign(tokens.begin() + 1, tokens.end());
+		_serverConfig[i_S]._locations[i_L]._cgi.insert(std::make_pair(tokens[1], tokens[2]));
 	}
 	else
 	{
-		if (!_serverConfig[i_S]._cgi.empty())
-			exitError("error to many <" + tokens[0] + "> inside server block");
-		_serverConfig[i_S]._cgi.assign(tokens.begin() + 1, tokens.end());
+		exitError("error find <" + tokens[0] + "> inside server block");
 	}
 }
 

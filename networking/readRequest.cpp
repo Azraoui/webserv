@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: houbeid <houbeid@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 15:13:21 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/07 00:38:25 by houbeid          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 	this->_isRequestFinished = obj._isRequestFinished;
 	this->_statusCode = obj._statusCode;
 	this->_is_bad_request.first = false;
+	this->_requestFileName = obj._requestFileName;
 }
 
 // methods
