@@ -1,7 +1,7 @@
 <?php
-if (isset($_POST['user']))
+if (isset($_GET['user']))
 {
-  $name = $_POST['user'];
+  $name = $_GET['user'];
   // $name2 = $_POST['fname2'];
   // $name3 = $_POST['fname3'];
 }

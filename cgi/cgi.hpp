@@ -2,6 +2,8 @@
 # define CGI_PHP
 
 #include <iostream>
+#include <sstream>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,6 +23,8 @@ class cgi
 
     private:
         std::string     _cgiPath;
+        int             _fd;
+        std::string     _outputfile;
 
     public:
         int fd_input;
@@ -31,10 +35,11 @@ class cgi
         int         cgi_error;
         std::string query_params;
                 
-        cgi(ReadRequest request, std::string cgiPath);
+        cgi(ReadRequest request, std::string cgiPath, int fd);
         ~cgi();
         void    setenvcgi(void);
-        void    executecgi(void);
+        std::string concat(std::string const & s, int i);
+        int    executecgi(void);
 
 };
 #endif
