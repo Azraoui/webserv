@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 22:46:36 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 23:20:52 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -461,8 +461,25 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 	int i;
 	std::string rootAndUri, msg;
 	struct stat	buf;
+	int	bodySize;
 
+	bodySize = 1;
 	i = matchLocationAndUri(server._locations, request.getUriPath());
+	if (server._locations[i]._maxBodySize.empty())
+	{
+		if (!server._maxBodySize.empty())
+			bodySize = atoi(server._maxBodySize.c_str());
+	}
+	else
+		bodySize = atoi(server._locations[i]._maxBodySize.c_str());
+	stat(request.getRequestFileName().c_str(), &buf);
+	off_t size = buf.st_size;
+	if ((size / 1000000) > bodySize || (bodySize == (size / 1000000) && (size % 1000000)))
+	{
+		msg = errRespone(413, status_code);
+		write(clientFd, msg.c_str(), msg.size());
+		return ;
+	}
 	if (i != -1)
 	{
 		std::string temp = request.getUriPath();

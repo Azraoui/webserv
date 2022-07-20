@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 15:06:13 by alhamdolila      ###   ########.fr       */
+/*   Updated: 2022/07/20 23:01:56 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,12 @@ void	getErrorPage(std::vector<std::string> &tokens, bool const &insideLocation, 
 		_serverConfig[i_S]._errorPage.insert(std::make_pair(tokens[1], tokens[2]));
 }
 
-void	getMaxBodySize(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S)
+void	getMaxBodySize(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)
 {
-	if (tokens.size() != 2)
+	if (tokens.size() != 2 || !isalnum(tokens[1][0]))
 		exitError("error near directive <" + tokens[0] + ">");
 	if (insideLocation)
-		exitError("error find <" + tokens[0] + "> inside location");
+		_serverConfig[i_S]._locations[i_L]._maxBodySize = tokens[1];
 	else
 		_serverConfig[i_S]._maxBodySize = tokens[1];
 }
@@ -324,7 +324,7 @@ std::vector<Vserver> parsingConfigFile(std::string const &fileName)
 					else if (!strcmp(tokens[0].c_str(), "error_page"))
 						getErrorPage(tokens, insideLocation, _serverConfig, index_S);
 					else if (!strcmp(tokens[0].c_str(), "max_body_size"))
-						getMaxBodySize(tokens, insideLocation, _serverConfig, index_S);
+						getMaxBodySize(tokens, insideLocation, _serverConfig, index_S, index_L);
 					else if (!strcmp(tokens[0].c_str(), "return"))
 						getReturn(tokens, insideLocation, _serverConfig, index_S, index_L);
 					else if (!strcmp(tokens[0].c_str(), "cgi"))
