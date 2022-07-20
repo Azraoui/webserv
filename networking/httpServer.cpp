@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 22:37:34 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 22:46:36 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -638,6 +638,30 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 						write(clientFd, "HTTP/1.1 204 No Content\n\n", 25);
 					}
 				}
+			}
+			else if (buf.st_mode & S_IREAD) // if path requset is a file
+			{
+				std::string extension;
+				extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
+				if (!server._locations[i]._cgi[extension].empty()) // call cgi hamada where are you
+				{
+					
+				}
+				else // delete file
+				{
+					if (deleteFiles(rootAndUri, false))
+					{
+						msg = errRespone(500, status_code);
+						write(clientFd, msg.c_str(), msg.size());
+						return ;
+					}
+					write(clientFd, "HTTP/1.1 204 No Content\n\n", 25);
+				}
+			}
+			else
+			{
+				msg = errRespone(403, status_code);
+				write(clientFd, msg.c_str(), msg.size());
 			}
 		}
 		else
