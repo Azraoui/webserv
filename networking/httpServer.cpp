@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 12:44:59 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 12:54:43 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,21 +308,21 @@ std::string	 handling_auto_index(std::string current_path)
 
 void	HttpServer::_responseServer(int clientFd, int i)
 {
-    std::string Method = _selectUtility.getRequest(clientFd).getMethod();
+    // std::string Method = _selectUtility.getRequest(clientFd).getMethod();
     // std::string path = _servers[pos]._locations
     
     // _selectUtility.getRequest(clientFd).handling_response_errors();
     // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    // handling_auto_index("/Users/yer-raki/Desktop/webserv");
+    //handling_auto_index("/Users/yer-raki/Desktop/webserv");
     
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
-    // if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
-        // cgi cgi(_selectUtility.getRequest(clientFd), Path);
+    // if (Path.find(".php") != std::string::npos || Path.find(".py") != std::string::npos) // for testing
+    //     cgi cgi(_selectUtility.getRequest(clientFd), "/usr/bin/python", clientFd);
     // if (Method == "POST")
     //     handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
     // if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
-    // if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
-    //     cgi cgi(_selectUtility.getRequest(clientFd), );
+    /*if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
+        cgi cgi(_selectUtility.getRequest(clientFd), "/Users/houbeid/Desktop/webserv/cgi/index.php");*/
     // if (Method == "POST")
         // handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), // upload_path);
     if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
@@ -377,9 +377,6 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     for (size_t j = 0; j < server._locations[i]._index.size(); j++)
                     {
                         indexPath = rootAndUri + "/" + server._locations[i]._index[j];
-                        std::cout << indexPath.c_str() << std::endl;
-                        if (!lstat(indexPath.c_str(), &buf))
-                            std::cout << "i was here\n";
                         if (!lstat(indexPath.c_str(), &buf) && !(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
                         {
                             extension = server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".") + 1);
@@ -405,8 +402,8 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     {
                         if (!server._locations[i]._cgi[extension].empty()) // find cgi
                         {
-                            cgi obj(request, server._locations[i]._cgi[extension]);
-                            if (obj.cgi_error)
+                            cgi obj(request, server._locations[i]._cgi[extension], clientFd);
+                            if (obj.executecgi())
                                 std::cout << "find error" << std::endl;
                         }
                         msg = sendGetResponse(indexPath, getMimeType(extension, mime_type));
