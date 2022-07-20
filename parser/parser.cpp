@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/07 01:39:34 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 11:36:00 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,15 +239,9 @@ void	getCGI(std::vector<std::string> &tokens, bool const &insideLocation, std::v
 	if (tokens.size() != 3)
 		exitError("error near directive <" + tokens[0] + ">");
 	if (insideLocation)
-	{
-		if (!_serverConfig[i_S]._locations[i_L]._cgi.empty())
-			exitError("error to many <" + tokens[0] + "> inside location block");
 		_serverConfig[i_S]._locations[i_L]._cgi.insert(std::make_pair(tokens[1], tokens[2]));
-	}
 	else
-	{
 		exitError("error find <" + tokens[0] + "> inside server block");
-	}
 }
 
 void	getUploadPath(std::vector<std::string> &tokens, bool const &insideLocation, std::vector<Vserver> &_serverConfig, int i_S, int i_L)

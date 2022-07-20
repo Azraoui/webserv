@@ -88,10 +88,16 @@ std::string sendGetResponse(std::string indexPath, std::string contentType)
 		file >> tmp;
 		body.append(tmp);
 	}
-	std::cout << "body = " << body << std::endl;
 	std::string contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
 	return firstLine + _contentType + contentLength + body;
+}
 
+std::string sendAutoIndexResponse(std::string body, std::string contentType)
+{
+	std::string firstLine = "HTTP/1.1 200 OK\n";
+	std::string _contentType = "Content-Type: " + contentType + "\n";
+	std::string contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
+	return firstLine + _contentType + contentLength + body;
 }
 
 std::string	getMimeType(std::string key, std::map<std::string, std::string> mimeMap)

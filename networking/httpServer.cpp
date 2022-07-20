@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/08 18:19:58 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/20 12:44:59 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,17 +309,17 @@ std::string	 handling_auto_index(std::string current_path)
 void	HttpServer::_responseServer(int clientFd, int i)
 {
     std::string Method = _selectUtility.getRequest(clientFd).getMethod();
-    std::string Path = _selectUtility.getRequest(clientFd).getUriPath();
+    // std::string path = _servers[pos]._locations
     
-    _selectUtility.getRequest(clientFd).handling_response_errors();
-    _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-    handling_auto_index("/Users/yer-raki/Desktop/webserv");
+    // _selectUtility.getRequest(clientFd).handling_response_errors();
+    // _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
+    // handling_auto_index("/Users/yer-raki/Desktop/webserv");
     
     // _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
-    if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
-        cgi cgi(_selectUtility.getRequest(clientFd), Path);
-    if (Method == "POST")
-        handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
+    // if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
+        // cgi cgi(_selectUtility.getRequest(clientFd), Path);
+    // if (Method == "POST")
+    //     handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
     // if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
     // if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
     //     cgi cgi(_selectUtility.getRequest(clientFd), );
@@ -376,7 +376,10 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     std::string extension;
                     for (size_t j = 0; j < server._locations[i]._index.size(); j++)
                     {
-                        indexPath = rootAndUri + server._locations[i]._index[j];
+                        indexPath = rootAndUri + "/" + server._locations[i]._index[j];
+                        std::cout << indexPath.c_str() << std::endl;
+                        if (!lstat(indexPath.c_str(), &buf))
+                            std::cout << "i was here\n";
                         if (!lstat(indexPath.c_str(), &buf) && !(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
                         {
                             extension = server._locations[i]._index[j].substr(server._locations[i]._index[j].find_last_of(".") + 1);
@@ -388,7 +391,9 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                         if (server._locations[i]._autoindex == "on")
                         {
                             // handle auto index
-                            // handling_auto_index("/Users/yer-raki/Desktop/webserv"); /* current_path */
+                            std::string body = handling_auto_index(rootAndUri); /* current_path */
+                            msg = sendAutoIndexResponse(body, "text/html");
+                            write(clientFd, msg.c_str(), msg.size());
                         }
                         else
                         {
@@ -398,6 +403,12 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     }
                     else
                     {
+                        if (!server._locations[i]._cgi[extension].empty()) // find cgi
+                        {
+                            cgi obj(request, server._locations[i]._cgi[extension]);
+                            if (obj.cgi_error)
+                                std::cout << "find error" << std::endl;
+                        }
                         msg = sendGetResponse(indexPath, getMimeType(extension, mime_type));
                         write(clientFd, msg.c_str(), msg.size());
                     }

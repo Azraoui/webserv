@@ -12,3 +12,4 @@ std::string errRespone(int err, std::map<int, std::string> errs);
 std::string redirect(int err, std::map<int, std::string> errs, std::string link);
 std::string sendGetResponse(std::string indexPath, std::string contentType);
 std::string	getMimeType(std::string key, std::map<std::string, std::string> mimeMap);
+std::string sendAutoIndexResponse(std::string body, std::string contentType);
