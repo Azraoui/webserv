@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+         #
+#    By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/23 19:11:13 by ael-azra          #+#    #+#              #
-#    Updated: 2022/07/20 12:13:29 by ael-azra         ###   ########.fr        #
+#    Updated: 2022/07/20 16:06:57 by alhamdolila      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ INC = ./includes/parser.hpp ./includes/httpServer.hpp \
 		./includes/serverResponse.hpp \
 		./cgi/cgi.hpp
 
-FLAG = c++  -Wall -Wextra -Werror -std=c++98
+FLAG = c++  -std=c++98
 
 all: $(NAME)
 

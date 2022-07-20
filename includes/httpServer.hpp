@@ -15,6 +15,7 @@
 # include <sys/select.h>
 # include <iostream>
 # include <sys/stat.h>
+# include <unistd.h>
 
 # define BUFFER_LENGTH 1024
 
@@ -33,6 +34,8 @@ class HttpServer
 		bool	_readRequest(int clientFd);
 		void	_acceptRequest(int position);
 		void	_handleGetMethod(ReadRequest request, Vserver &server, int clientFd);
+		void	_handlePost(ReadRequest request, Vserver &server, int clientFd);
+		void	_handleDelete(ReadRequest request, Vserver &server, int clientFd);
 		void	_responseServer(int clientFd, int i);
 		void	_handling_method_allowed_error(ReadRequest &request, Vserver &server);
 	public:
