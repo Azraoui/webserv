@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpServer.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 17:47:43 by alhamdolila      ###   ########.fr       */
+/*   Updated: 2022/07/20 19:17:40 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,17 +425,25 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 			}
 			else // file request
 			{
-				std::string extension;
-				extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
-				if (!server._locations[i]._cgi[extension].empty()) // find cgi
+				if (buf.st_mode & S_IREAD)
 				{
-					cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
-					if (obj.executecgi())
-						std::cout << "find error" << std::endl;
+					std::string extension;
+					extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
+					if (!server._locations[i]._cgi[extension].empty()) // find cgi
+					{
+						cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
+						if (obj.executecgi())
+							std::cout << "find error" << std::endl;
+					}
+					else
+					{
+						msg = sendGetResponse(rootAndUri, getMimeType(extension, mime_type));
+						write(clientFd, msg.c_str(), msg.size());
+					}
 				}
 				else
 				{
-					msg = sendGetResponse(rootAndUri, getMimeType(extension, mime_type));
+					msg = errRespone(403, status_code);
 					write(clientFd, msg.c_str(), msg.size());
 				}
 			}
@@ -457,7 +465,6 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 	i = matchLocationAndUri(server._locations, request.getUriPath());
 	if (i != -1)
 	{
-		std::cout << "uri path = " << request.getUriPath() << std::endl;
 		std::string temp = request.getUriPath();
 		temp = temp.erase(0, server._locations[i]._locationPath.size());
 		if (!server._locations[i]._rootPath.empty())
@@ -483,6 +490,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 				path = server._locations[i]._uploadPath + request.getRequestFileName().substr(request.getRequestFileName().find_last_of("/") + 1);
 				readFd = open(path.c_str(), O_RDWR | O_APPEND | O_CREAT, 0666);
 				write(readFd, readFileIntoString(request.getRequestFileName()).c_str(), request.getBodyFileLength());
+				write(clientFd, "HTTP/1.1 201 Created\n\n", 22);
 				close(readFd);
 			}
 			else
@@ -497,12 +505,53 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 			{
 				if (buf.st_mode & S_IFDIR) // if path is a directory
 				{
-					if (request.getUriPath() != "/")
+					if (!server._locations[i]._index.empty() || !server._index.empty())
 					{
-						msg = redirect(301, status_code, request.getUriPath() + '/');
-						std::cout << msg << std::endl;
-						write(clientFd, msg.c_str(), msg.size());
+						std::vector<std::string> index;
+						if (server._locations[i]._index.empty())
+							index = server._index;
+						else
+							index = server._locations[i]._index;
+						std::string indexPath;
+						std::string extension;
+						for (size_t j = 0; j < index.size(); j++)
+						{
+							if (rootAndUri[rootAndUri.size() - 1] != '/')
+								rootAndUri += "/";
+							indexPath = rootAndUri + index[j];
+							if (!lstat(indexPath.c_str(), &buf) && !(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
+							{
+								extension = index[j].substr(index[j].find_last_of(".") + 1);
+								break;
+							}
+						}
+						if (!server._locations[i]._cgi[extension].empty())
+						{
+							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
+							if (obj.executecgi())
+								std::cout << "find error" << std::endl;
+							return ;
+						}
 					}
+					msg = errRespone(403, status_code);
+					write(clientFd, msg.c_str(), msg.size());
+				}
+				else // if path is a file
+				{
+					if (buf.st_mode & S_IREAD)
+					{
+						std::string extension;
+						extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
+						if (!server._locations[i]._cgi[extension].empty())
+						{
+							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
+							if (obj.executecgi())
+								std::cout << "find error" << std::endl;
+							return ;
+						}
+					}
+					msg = errRespone(403, status_code);
+					write(clientFd, msg.c_str(), msg.size());
 				}
 			}
 			else
@@ -516,5 +565,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 
 void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientFd)
 {
-	
+	(void)request;
+	(void)server;
+	(void)clientFd;
 }
