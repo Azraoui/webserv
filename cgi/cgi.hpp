@@ -25,6 +25,7 @@ class cgi
         std::string     _cgiPath;
         int             _fd;
         std::string     _outputfile;
+        std::string     _path;
 
     public:
         int fd_input;
@@ -35,7 +36,7 @@ class cgi
         int         cgi_error;
         std::string query_params;
                 
-        cgi(ReadRequest request, std::string cgiPath, int fd);
+        cgi(ReadRequest request, std::string cgiPath, int fd, std::string path);
         ~cgi();
         void    setenvcgi(void);
         std::string concat(std::string const & s, int i);

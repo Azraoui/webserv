@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 12:54:43 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 13:54:35 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,6 +356,7 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
             rootAndUri = server._locations[i]._rootPath + temp;
         else // i should handle in config file if i don't find root in server and in location -> throw error
             rootAndUri = server._rootPath + temp;
+        std::cout << "rootAndUri = " << rootAndUri.c_str() << std::endl;
         if (!lstat(rootAndUri.c_str(), &buf))
         {
             if (!(buf.st_mode & S_IREAD))
@@ -402,7 +403,7 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     {
                         if (!server._locations[i]._cgi[extension].empty()) // find cgi
                         {
-                            cgi obj(request, server._locations[i]._cgi[extension], clientFd);
+                            cgi obj(request, server._locations[i]._cgi[extension], clientFd, indexPath);
                             if (obj.executecgi())
                                 std::cout << "find error" << std::endl;
                         }
@@ -411,10 +412,14 @@ void    HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int c
                     }
                 }
             }
+            else
+            {
+                std::cout << rootAndUri << std::endl;
+            }
         }
         else
         {
-            // msg = handling_auto_index("/Users/yer-raki/Desktop/webserv");
+            std::cout << "i was here" << std::endl;
             msg = errRespone(404, status_code);
             write(clientFd, msg.c_str(), msg.size());
         }

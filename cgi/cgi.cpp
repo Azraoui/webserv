@@ -11,13 +11,13 @@ std::string cgi::concat(std::string const & s, int i)
     return (s + ss.str());
 }
 
-cgi::cgi(ReadRequest request, std::string cgiPath, int fd): _cgiPath(cgiPath), _fd(fd)
+cgi::cgi(ReadRequest request, std::string cgiPath, int fd, std::string path): _cgiPath(cgiPath), _fd(fd), _path(path)
 {
     // bedel dak path li generiti b _cgiPath
     this->request = request;
-    std::string path = request.getUriPath();
+    // std::string path = request.getUriPath();
     std::vector<std::string> query;
-    query = split(path, '?');
+    query = split(_path, '?');
     query_params = query[query.size() - 1];
     file = query[0];
     cgi_error = 0;
