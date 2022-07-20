@@ -117,3 +117,15 @@ std::string	readFileIntoString(const std::string& path) {
     }
     return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 }
+
+int	deleteFiles(const std::string &path, bool directory)
+{
+	if (directory)
+	{
+		if (system(("rm -rf " + path + "*").c_str()))
+			return 0;
+	}
+	else if (system(("rm -rf " + path).c_str()))
+		return 0;
+	return 1;
+}

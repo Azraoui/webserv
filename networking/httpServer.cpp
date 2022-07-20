@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 19:17:40 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/20 22:37:34 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,20 +263,20 @@ std::string	 body_auto_index(std::string current_path)
 			continue;
 		if (str == "..")
 		{
-			directories = "<a href = " + current_path + "/" + ">" + current_path + "</a>";
+			directories = "<a href =  ./ >" + str + "</a>";
 			continue;
 		}
 		if (ret_stat.st_mode & S_IFDIR)
 		{
 			std::cout << "------------------------------" << std::endl;
 			std::cout << "directory : " << str << std::endl;
-			directories += "\n<a href = " + str + "/" + ">" + str + "</a>";
+			directories += "<br><a href = " + str + "/" + ">" + str + "</a>";
 		}
 		else if (ret_stat.st_mode & S_IFREG)
 		{
 			std::cout << "------------------------------" << std::endl;
 			std::cout << "file : " << str << std::endl;
-			files += "\n<a href = " + str + ">" + str + "</a>";
+			files += "<br><a href = " + str + ">" + str + "</a>";
 		}
 	}
 	closedir (dir);
@@ -565,7 +565,85 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 
 void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientFd)
 {
-	(void)request;
-	(void)server;
-	(void)clientFd;
+	int i;
+	std::string rootAndUri, msg;
+	struct stat	buf;
+
+	i = matchLocationAndUri(server._locations, request.getUriPath());
+	if (i != -1)
+	{
+		std::string temp = request.getUriPath();
+		temp = temp.erase(0, server._locations[i]._locationPath.size());
+		if (!server._locations[i]._rootPath.empty())
+		{
+			if (server._locations[i]._rootPath[server._locations[i]._rootPath.size() -1] != '/')
+				server._locations[i]._rootPath += "/";
+			rootAndUri = server._locations[i]._rootPath + temp;
+		}
+		else
+		{
+			if (server._rootPath[server._rootPath.size() -1] != '/')
+				server._rootPath += "/";	
+			rootAndUri = server._rootPath + temp;
+		}
+		if (!lstat(rootAndUri.c_str(), &buf))
+		{
+			if (buf.st_mode & S_IFDIR) // if path is a directory
+			{
+				if (rootAndUri[rootAndUri.size() -1] != '/')
+				{
+					msg = errRespone(409, status_code);
+					write(clientFd, msg.c_str(), msg.size());
+				}
+				else
+				{
+					std::vector<std::string> index;
+					if (server._locations[i]._index.empty())
+						index = server._index;
+					else
+						index = server._locations[i]._index;
+					std::string indexPath;
+					std::string extension;
+					for (size_t j = 0; j < index.size(); j++)
+					{
+						if (rootAndUri[rootAndUri.size() - 1] != '/')
+							rootAndUri += "/";
+						indexPath = rootAndUri + index[j];
+						if (!lstat(indexPath.c_str(), &buf) && !(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
+						{
+							extension = index[j].substr(index[j].find_last_of(".") + 1);
+							break;
+						}
+					}
+					if (!server._locations[i]._cgi.empty())
+					{
+						if (!server._locations[i]._cgi[extension].empty()) // call cgi
+						{
+							// hammada where are you!
+						}
+						else
+						{
+							msg = errRespone(403, status_code);
+							write(clientFd, msg.c_str(), msg.size());
+						}
+					}
+					else // Delete all folder content
+					{
+						if (deleteFiles(rootAndUri, false))
+						{
+							msg = errRespone(500, status_code);
+							write(clientFd, msg.c_str(), msg.size());
+							return ;
+						}
+						write(clientFd, "HTTP/1.1 204 No Content\n\n", 25);
+					}
+				}
+			}
+		}
+		else
+		{
+			msg = errRespone(404, status_code);
+			write(clientFd, msg.c_str(), msg.size());
+		}
+	}
 }
