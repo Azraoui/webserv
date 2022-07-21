@@ -6,8 +6,9 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
+ 
 
-# Make data base, printed on Mon Jul  4 16:18:18 2022
+# Make data base, printed on Thu Jul 21 10:25:38 2022
 
 # Variables
 
@@ -16,15 +17,16 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # automatic
 ?F = $(notdir $?)
 # makefile (from `Makefile', line 15)
-SRC = ./main.cpp ./parser/parser.cpp ./networking/httpServer.cpp ./networking/socket.cpp ./networking/serverRequest.cpp ./networking/readRequest.cpp 
+SRC = ./main.cpp ./parser/parser.cpp ./networking/httpServer.cpp ./networking/socket.cpp ./networking/serverRequest.cpp ./networking/readRequest.cpp ./networking/touls.cpp ./networking/serverResponse.cpp ./cgi/cgi.cpp
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
+ 
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # automatic
 @F = $(notdir $@)
 # makefile
-CURDIR := /Users/houbeid/Desktop/webserv
+CURDIR := /Users/ael-azra/Desktop/webserv
 # makefile
 SHELL = /bin/sh
 # environment
@@ -34,53 +36,39 @@ _ = /usr/bin/make
 # makefile (from `Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # environment
-VSCODE_NODE_CACHED_DATA_DIR = /Users/houbeid/Library/Application Support/Code/CachedData/ea3859d4ba2f3e577a159bc91e3074c5d85c0523
+VSCODE_CWD = /
 # environment
-VERBOSE_LOGGING = true
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.R5s69jX7jI/Render
 # environment
-__CFBundleIdentifier = com.microsoft.VSCode
-# environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/_d/ffjgzmh92flbhgsmdgstm10h0000gn/T/vscode-ipc-f3b574b8-6b24-4580-9a51-55a4b86b72c6.sock
-# environment
-PATH = /Users/houbeid/goinfre/houbeid/.brew/bin:/Users/houbeid/miniconda3/bin:/Users/houbeid/miniconda3/condabin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-# environment
-LSCOLORS = Gxfxcxdxbxegedabagacad
-# environment
-HOME_BREW = /Users/houbeid/goinfre/houbeid
-# environment
-VSCODE_LOG_STACK = false
+PATH = /Users/ael-azra/.orthodox:/Users/ael-azra/.orthodox:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.EdS8GWmnu9/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.gvZnjK5j1s/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
-CONDA_EXE = /Users/houbeid/miniconda3/bin/conda
-# environment
-PWD = /Users/houbeid/Desktop/webserv
+PWD = /Users/ael-azra/Desktop/webserv
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
-HOME = /Users/houbeid
-# default
-MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-LOGNAME = houbeid
+HOME = /Users/ael-azra
+# default
+MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/ael-azra/Library/Application Support/Code/CachedData/b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
+# environment
+LOGNAME = ael-azra
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
-# environment
-CONDA_PROMPT_MODIFIER = (base) 
-# environment
-ZSH = /Users/houbeid/.oh-my-zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
-# environment
-CONDA_DEFAULT_ENV = base
 # environment
 XPC_FLAGS = 0x0
 # default
@@ -92,33 +80,27 @@ SHLVL = 1
 # default
 MAKE_VERSION := 3.81
 # environment
-AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
-# environment
-USER = houbeid
+USER = ael-azra
 # makefile
 .DEFAULT_GOAL := all
 # makefile (from `Makefile', line 13)
 NAME = webserv
-# environment
-PIPE_LOGGING = true
-# environment
-LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# environment
-CONDA_SHLVL = 1
 # default
-MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
-# makefile (from `Makefile', line 20)
-INC = ./includes/parser.hpp ./includes/httpServer.hpp ./includes/socket.hpp ./includes/serverRequest.hpp ./includes/readRequest.hpp 
+MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# makefile (from `Makefile', line 22)
+INC = ./includes/parser.hpp ./includes/httpServer.hpp ./includes/socket.hpp ./includes/serverRequest.hpp ./includes/readRequest.hpp ./includes/touls.hpp ./includes/serverResponse.hpp ./cgi/cgi.hpp
 # default
 .VARIABLES := 
 # environment
-TMPDIR = /var/folders/_d/ffjgzmh92flbhgsmdgstm10h0000gn/T/
+TMPDIR = /var/folders/zz/zyxvpxvq6csfxvn_n0000jwc0004g3/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/houbeid/Library/Application Support/Code/1.52.1-main.sock
+VSCODE_IPC_HOOK = /Users/ael-azra/Library/Application Support/Code/1.69.1-main.sock
+# environment
+MallocNanoZone = 0
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -126,47 +108,35 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.55600.55606
+XPC_SERVICE_NAME = com.microsoft.VSCode.3756
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
 +F = $(notdir $+)
-# makefile (from `Makefile', line 25)
+# makefile (from `Makefile', line 29)
 FLAG = c++ -Wall -Wextra -Werror -std=c++98
 # environment
-__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x1
-# environment
-COMMAND_MODE = unix2003
+__CF_USER_TEXT_ENCODING = 0x11E3:0:0
 # default
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
 # environment
-PAGER = less
-# environment
 LC_ALL = C
-# environment
-CONDA_PYTHON_EXE = /Users/houbeid/miniconda3/bin/python
 # automatic
 ^F = $(notdir $^)
 # default
 SUFFIXES := 
-# environment
-_CE_M = 
 # default
 .INCLUDE_DIRS = /usr/local/include
 # environment
 MAKELEVEL := 0
 # environment
-CONDA_PREFIX = /Users/houbeid/miniconda3
-# environment
-VSCODE_PID = 716
-# environment
-_CE_CONDA = 
-# environment
 LANG = C
+# environment
+VSCODE_PID = 91030
 # variable set hash-table stats:
-# Load=77/1024=8%, Rehash=0, Collisions=5/110=5%
+# Load=61/1024=6%, Rehash=0, Collisions=3/94=3%
 
 # Pattern-specific Variable Values
 
@@ -174,9 +144,9 @@ LANG = C
 
 # Directories
 
-# . (device 16777221, inode 10693230): 14 files, no impossibilities.
+# . (device 16777227, inode 3827424): 17 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 17 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -187,7 +157,7 @@ LANG = C
 # Not a target:
 networking/socket.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 11:17:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -203,7 +173,7 @@ all: webserv
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/5=0%
 
-webserv: main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+webserv: main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp networking/touls.cpp networking/serverResponse.cpp cgi/cgi.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp includes/touls.hpp includes/serverResponse.hpp cgi/cgi.hpp
 #  Implicit rule search has not been done.
 #  Implicit/static pattern stem: `'
 #  File does not exist.
@@ -216,18 +186,18 @@ webserv: main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.
 # automatic
 # * := 
 # automatic
-# + := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# + := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp networking/touls.cpp networking/serverResponse.cpp cgi/cgi.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp includes/touls.hpp includes/serverResponse.hpp cgi/cgi.hpp
 # automatic
 # | := 
 # automatic
 # < := main.cpp
 # automatic
-# ^ := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# ^ := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp networking/touls.cpp networking/serverResponse.cpp cgi/cgi.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp includes/touls.hpp includes/serverResponse.hpp cgi/cgi.hpp
 # automatic
-# ? := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp
+# ? := main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.cpp networking/serverRequest.cpp networking/readRequest.cpp networking/touls.cpp networking/serverResponse.cpp cgi/cgi.cpp includes/parser.hpp includes/httpServer.hpp includes/socket.hpp includes/serverRequest.hpp includes/readRequest.hpp includes/touls.hpp includes/serverResponse.hpp cgi/cgi.hpp
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=5/13=38%
-#  commands to execute (from `Makefile', line 30):
+#  commands to execute (from `Makefile', line 34):
 	@$(FLAG) $(SRC) -o $(NAME)
 	
 
@@ -239,7 +209,7 @@ webserv: main.cpp parser/parser.cpp networking/httpServer.cpp networking/socket.
 # Not a target:
 includes/httpServer.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 18:20:34
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -248,7 +218,7 @@ includes/httpServer.hpp:
 # Not a target:
 includes/readRequest.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 11:17:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -257,7 +227,7 @@ includes/readRequest.hpp:
 # Not a target:
 networking/httpServer.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-21 10:16:58
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -266,7 +236,7 @@ networking/httpServer.cpp:
 # Not a target:
 networking/readRequest.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 12:43:36
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -281,8 +251,7 @@ networking/readRequest.cpp:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
- 
+#  Last modified 2022-07-20 19:06:12
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -291,7 +260,7 @@ Makefile:
 # Not a target:
 includes/parser.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 22:56:33
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -300,7 +269,7 @@ includes/parser.hpp:
 # Not a target:
 includes/serverRequest.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 11:17:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -309,7 +278,7 @@ includes/serverRequest.hpp:
 # Not a target:
 main.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 22:50:29
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -318,7 +287,8 @@ main.cpp:
 # Not a target:
 networking/serverRequest.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+ 
+#  Last modified 2022-07-20 11:17:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -329,7 +299,7 @@ fclean: clean
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 39):
+#  commands to execute (from `Makefile', line 43):
 	@rm -f $(NAME)
 	
 
@@ -349,14 +319,14 @@ run: all
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 33):
+#  commands to execute (from `Makefile', line 37):
 	@ ./webserv
 	
 
 # Not a target:
 parser/parser.cpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 23:01:56
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -367,21 +337,75 @@ clean:
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 36):
+#  commands to execute (from `Makefile', line 40):
 	@echo -n
 	
 
 # Not a target:
+includes/serverResponse.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-20 11:17:15
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+cgi/cgi.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-21 09:55:31
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+networking/serverResponse.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-20 11:17:15
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+includes/touls.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-21 09:54:55
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+networking/touls.cpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-21 10:25:26
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+cgi/cgi.hpp:
+#  Implicit rule search has been done.
+#  Last modified 2022-07-21 09:55:39
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
 includes/socket.hpp:
 #  Implicit rule search has been done.
-#  Last modified 2022-07-04 16:14:54
+#  Last modified 2022-07-20 11:17:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # files hash-table stats:
-# Load=21/1024=2%, Rehash=0, Collisions=0/55=0%
+# Load=27/1024=3%, Rehash=0, Collisions=0/67=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -393,6 +417,6 @@ includes/socket.hpp:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Mon Jul  4 16:18:18 2022
+# Finished Make data base on Thu Jul 21 10:25:38 2022
 
  

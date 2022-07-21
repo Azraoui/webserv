@@ -1,3 +1,13 @@
 # This program prints Hello, world!
 
-print('Hello, world!')
+#!/usr/bin/python
+
+print "Content-type:text/htm\n\n"
+print '<html>'
+print '<head>'
+print '<title>Hello World - First CGI Program</title>'
+print '</head>'
+print '<body>'
+print '<h2>Hello World! This is my first CGI program</h2>'
+print '</body>'
+print '</html>'

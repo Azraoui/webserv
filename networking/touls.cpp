@@ -108,14 +108,15 @@ std::string	getMimeType(std::string key, std::map<std::string, std::string> mime
 		return "application/octet-stream";
 }
 
-std::string	readFileIntoString(const std::string& path) {
+void	readFileIntoString(const std::string& path, std::string *fileContent) {
     std::ifstream input_file(path);
     if (!input_file.is_open()) {
         std::cerr << "Could not open the file - '"
              << path << "'" << std::endl;
         exit(EXIT_FAILURE);
     }
-    return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+    *fileContent =  std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+	input_file.close();
 }
 
 int	deleteFiles(const std::string &path, bool directory)
@@ -128,4 +129,23 @@ int	deleteFiles(const std::string &path, bool directory)
 	else if (system(("rm -rf " + path).c_str()))
 		return 0;
 	return 1;
+}
+
+std::string	responseCgi(std::string cgiFilePath)
+{
+	std::string firstLine;
+	std::string contentType;
+	std::string contentLength;
+	std::string	ret;
+	std::string bodyContent;
+	std::string tmp;
+
+	readFileIntoString(cgiFilePath, &tmp);
+	if (tmp.find("\n\n") != tmp.npos)
+		bodyContent = tmp.substr(bodyContent.find_first_of("\n\n") + 2);
+	firstLine = "HTTP/1.1 200 OK\n";
+	contentType = "Content-Type: text/html\n";
+	contentLength = "Content-Length: " + std::to_string(bodyContent.size()) + "\n\n";
+	ret = firstLine + contentType + bodyContent;
+	return ret;
 }

@@ -86,3 +86,8 @@ cgi::~cgi()
     close(fd_output);
     close(fd_input);
 }
+
+std::string cgi::getCgiRetPath(void) const
+{
+    return this->_outputfile;
+}

@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 23:20:52 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/21 12:45:54 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,14 +238,13 @@ void    HttpServer::_handling_method_allowed_error(ReadRequest &request, Vserver
 void handling_upload(std::string request_file_name, std::string upload_path)
 {
 	// std::string new_str = "cgi_" + request_file_name;
-	std::cout << request_file_name << std::endl;
 	std::ifstream  src(request_file_name.c_str(), std::ios::binary);
 	std::ofstream  dst(upload_path.c_str(), std::ios::binary);
 	dst << src.rdbuf();
 
 }
 
-std::string	 body_auto_index(std::string current_path)
+std::string	 body_auto_index(std::string current_path, std::string root)
 {
 	// std::string ret_body;
 	std::string directories;
@@ -254,44 +253,43 @@ std::string	 body_auto_index(std::string current_path)
 	struct dirent *ent;
 	struct stat ret_stat;
 	std::string str;
-	
+
 	while ((ent = readdir(dir)) != NULL)
 	{
+		str = current_path + ent->d_name;
+		stat(str.c_str(), &ret_stat);
 		str = ent->d_name;
-		stat(ent->d_name, &ret_stat);
 		if (str == ".")
 			continue;
 		if (str == "..")
 		{
-			directories = "<a href =  ./ >" + str + "</a>";
+			if (current_path != root)
+				str = "..";
+			else
+				str = "./";
+			directories = "<a href = " + str +  " > .. </a>";
 			continue;
 		}
 		if (ret_stat.st_mode & S_IFDIR)
-		{
-			std::cout << "------------------------------" << std::endl;
-			std::cout << "directory : " << str << std::endl;
 			directories += "<br><a href = " + str + "/" + ">" + str + "</a>";
-		}
-		else if (ret_stat.st_mode & S_IFREG)
+		else if (ret_stat.st_mode & S_IREAD)
 		{
-			std::cout << "------------------------------" << std::endl;
-			std::cout << "file : " << str << std::endl;
 			files += "<br><a href = " + str + ">" + str + "</a>";
 		}
 	}
-	closedir (dir);
+	closedir(dir);
 	return (directories + files);
 }
 
-std::string	 handling_auto_index(std::string current_path)
+std::string	 handling_auto_index(std::string current_path, std::string root)
 {
 	std::string htmlPage;
 	htmlPage = "<!DOCTYPE html>\n"\
 	"<html lang=\"en\">\n"\
 	"<head>\n"\
 	"	<style>\n"\
-	"		h1 {text-align: center; margin-top: 10%; color: red; font-size: 70px;}\n"\
-	"		h2 {text-align: center; margin-top: 3%; color: black; font-size: 50px;}\n"\
+	"		h1 {text-align: center; margin-top: 10%; color: red; font-size: 50px;}\n"\
+	"		h2 {text-align: center; margin-top: 3%; color: black; font-size: 30px;}\n"\
 	"	</style>\n"\
 	"	<meta charset=\"UTF-8\">\n"\
 	"	<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"\
@@ -300,7 +298,7 @@ std::string	 handling_auto_index(std::string current_path)
 	"</head>\n"\
 	"<body>\n"\
 		"<h1>Index of: " + current_path + "</h1>\n"\
-		+ body_auto_index(current_path) +
+		+ body_auto_index(current_path, root) +
 	"</body>\n"\
 	"</html>";
 	return htmlPage;
@@ -397,7 +395,7 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 						if (server._locations[i]._autoindex == "on")
 						{
 							// handle auto index
-							std::string body = handling_auto_index(rootAndUri); /* current_path */
+							std::string body = handling_auto_index(rootAndUri, server._locations[i]._rootPath); /* current_path */
 							msg = sendAutoIndexResponse(body, "text/html");
 							write(clientFd, msg.c_str(), msg.size());
 						}
@@ -409,11 +407,17 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 					}
 					else
 					{
-						if (!server._locations[i]._cgi[extension].empty()) // find cgi
+						if (!server._locations[i]._cgi[extension].empty()) // find cgi ---------
 						{
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, indexPath);
 							if (obj.executecgi())
-								std::cout << "find error" << std::endl;
+							{
+								msg = errRespone(403, status_code);
+								write(clientFd, msg.c_str(), msg.size());
+								return ;
+							}
+							msg = responseCgi("./" + obj.getCgiRetPath());
+							write(clientFd, msg.c_str(), msg.size());
 						}
 						else
 						{
@@ -429,11 +433,17 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 				{
 					std::string extension;
 					extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
-					if (!server._locations[i]._cgi[extension].empty()) // find cgi
+					if (!server._locations[i]._cgi[extension].empty()) // find cgi ---------
 					{
 						cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 						if (obj.executecgi())
-							std::cout << "find error" << std::endl;
+						{
+							msg = errRespone(403, status_code);
+							write(clientFd, msg.c_str(), msg.size());
+							return ;
+						}
+						msg = responseCgi("./" + obj.getCgiRetPath());
+						write(clientFd, msg.c_str(), msg.size());
 					}
 					else
 					{
@@ -506,7 +516,9 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 					server._locations[i]._uploadPath += "/";
 				path = server._locations[i]._uploadPath + request.getRequestFileName().substr(request.getRequestFileName().find_last_of("/") + 1);
 				readFd = open(path.c_str(), O_RDWR | O_APPEND | O_CREAT, 0666);
-				write(readFd, readFileIntoString(request.getRequestFileName()).c_str(), request.getBodyFileLength());
+				std::string content;
+				readFileIntoString(request.getRequestFileName(), &content);
+				write(readFd, content.c_str(), request.getBodyFileLength());
 				write(clientFd, "HTTP/1.1 201 Created\n\n", 22);
 				close(readFd);
 			}
@@ -542,11 +554,17 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 								break;
 							}
 						}
-						if (!server._locations[i]._cgi[extension].empty())
+						if (!server._locations[i]._cgi[extension].empty()) // cgi --
 						{
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 							if (obj.executecgi())
-								std::cout << "find error" << std::endl;
+							{
+								msg = errRespone(403, status_code);
+								write(clientFd, msg.c_str(), msg.size());
+								return ;
+							}
+							msg = responseCgi("./" + obj.getCgiRetPath());
+							write(clientFd, msg.c_str(), msg.size());
 							return ;
 						}
 					}
@@ -559,11 +577,17 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 					{
 						std::string extension;
 						extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
-						if (!server._locations[i]._cgi[extension].empty())
+						if (!server._locations[i]._cgi[extension].empty()) // cgi ----
 						{
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 							if (obj.executecgi())
-								std::cout << "find error" << std::endl;
+							{
+								msg = errRespone(403, status_code);
+								write(clientFd, msg.c_str(), msg.size());
+								return ;
+							}
+							msg = responseCgi("./" + obj.getCgiRetPath());
+							write(clientFd, msg.c_str(), msg.size());
 							return ;
 						}
 					}
@@ -634,9 +658,17 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 					}
 					if (!server._locations[i]._cgi.empty())
 					{
-						if (!server._locations[i]._cgi[extension].empty()) // call cgi
+						if (!server._locations[i]._cgi[extension].empty()) // call cgi ---
 						{
-							// hammada where are you!
+							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
+							if (obj.executecgi())
+							{
+								msg = errRespone(403, status_code);
+								write(clientFd, msg.c_str(), msg.size());
+								return ;
+							}
+							msg = responseCgi("./" + obj.getCgiRetPath());
+							write(clientFd, msg.c_str(), msg.size());
 						}
 						else
 						{
@@ -660,9 +692,17 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 			{
 				std::string extension;
 				extension = rootAndUri.substr(rootAndUri.find_last_of(".") + 1);
-				if (!server._locations[i]._cgi[extension].empty()) // call cgi hamada where are you
+				if (!server._locations[i]._cgi[extension].empty()) // call cgi ---
 				{
-					
+					cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
+					if (obj.executecgi())
+					{
+						msg = errRespone(403, status_code);
+						write(clientFd, msg.c_str(), msg.size());
+						return ;
+					}
+					msg = responseCgi("./" + obj.getCgiRetPath());
+					write(clientFd, msg.c_str(), msg.size());
 				}
 				else // delete file
 				{

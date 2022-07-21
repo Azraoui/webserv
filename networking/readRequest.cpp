@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 12:43:36 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/21 12:01:26 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		_header.append(_requestContent.substr(0, _requestContent.find("\r\n\r\n")));
 		_requestContent.erase(0, _requestContent.find("\r\n\r\n") + 4);
 		_parseHeader();
+		std::cout << _header << std::endl;
+		std::cout << "\n------------------------------\n"; // remove me and and line before me
 	}
 	if (!_requestContent.empty() && _isChunked && _bodyFileLength > 0)
 	{

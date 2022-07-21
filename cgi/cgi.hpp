@@ -41,6 +41,7 @@ class cgi
         void    setenvcgi(void);
         std::string concat(std::string const & s, int i);
         int    executecgi(void);
+        std::string getCgiRetPath(void) const;
 
 };
 #endif
