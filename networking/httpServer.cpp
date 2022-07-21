@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/21 12:46:55 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/21 16:13:02 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,24 +306,8 @@ std::string	 handling_auto_index(std::string current_path, std::string root)
 
 void	HttpServer::_responseServer(int clientFd, int i)
 {
-	// std::string Method = _selectUtility.getRequest(clientFd).getMethod();
-	// std::string path = _servers[pos]._locations
-	
 	// _selectUtility.getRequest(clientFd).handling_response_errors();
 	// _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-	//handling_auto_index("/Users/yer-raki/Desktop/webserv");
-	
-	// _selectUtility.getRequest(clientFd).setIsBadRequest(std::make_pair(true, 405));
-	// if (Path.find(".php") != std::string::npos || Path.find(".py") != std::string::npos) // for testing
-	//     cgi cgi(_selectUtility.getRequest(clientFd), "/usr/bin/python", clientFd);
-	// if (Method == "POST")
-	//     handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), _servers[_clientsSock[i].getServerPosition()]._locations[0]._uploadPath);
-	// if (_selectUtility.getRequest(clientFd).getMethod() == "GET" && !_selectUtility.getRequest(clientFd).getIsBadRequest().first)
-	/*if ((Method == "GET" || Method == "POST") && Path.find(".php") != std::string::npos) // for testing
-		cgi cgi(_selectUtility.getRequest(clientFd), "/Users/houbeid/Desktop/webserv/cgi/index.php");*/
-	// if (Method == "POST")
-		// handling_upload(_selectUtility.getRequest(clientFd).getRequestFileName(), // upload_path);
-
 
 	// ----------------------------------
 	if (_selectUtility.getRequest(clientFd).getMethod() == "GET")

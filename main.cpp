@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/23 19:05:46 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 22:50:29 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/21 16:20:11 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	main(int ac, char **av)
 		servers = parsingConfigFile(av[1]);
 
 		HttpServer	httpServer(servers);
+		httpServer.runServers();
 	}
 	else if (ac == 1)
 	{
