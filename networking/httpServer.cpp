@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/21 16:13:02 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/22 23:41:27 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ bool	HttpServer::_readRequest(int clientFd)
 	return true;
 }
 
-void	HttpServer::_acceptRequest(int position)
+void	HttpServer::_acceptRequest(int position) // curl --resolve example.com:7000:127.0.0.1 http://example.com:7000
 {
 	Socket tmp;
 	int    option_value;
@@ -213,26 +213,51 @@ void	HttpServer::_acceptRequest(int position)
 	_selectUtility.insertClient(tmp.getClientFd());
 }
 
-void    HttpServer::_handling_method_allowed_error(ReadRequest &request, Vserver &server)
+bool    HttpServer::_handlingErros_AndRediect(ReadRequest &request, Vserver &server, int clientFd)
 {
 	int pos_loc;
 	Location loc;
 	std::set<std::string>::iterator it;
+	std::string msg;
+	Location tmp;
 	
-	pos_loc = matchLocationAndUri(server._locations, request.getUriPath());
+	request.handling_response_errors();
+	if (request.getIsBadRequest().first)
+	{
+		msg = errRespone(request.getIsBadRequest().second, status_code, tmp, server);
+		write(clientFd, msg.c_str(), msg.size());
+		return true;
+	}
+	pos_loc = matchLocationAndUri(server._locations, request.getUriPath()); // if uriPath don't math locations
+	if (pos_loc == -1)
+	{
+		msg = errRespone(404, status_code, tmp, server);
+		write(clientFd, msg.c_str(), msg.size());
+		return true;
+	}
+	if (!server._locations[pos_loc]._redirection.first.empty()) // redirect if location have return
+	{
+		if (server._locations[pos_loc]._redirection.first == "301")
+			msg = "HTTP/1.1 301 Moved Permanently\nLocation: " + server._locations[pos_loc]._redirection.second + "\n\n";
+		else
+			msg = errRespone(501, status_code, server._locations[pos_loc], server);
+		write(clientFd, msg.c_str(), msg.size());
+		return true;
+	}
 	loc = server._locations[pos_loc];   
 	for (it = loc._allowed_methods.begin(); it != loc._allowed_methods.end(); it++)
 	{
 		if (*it == request.getMethod())
-			return;
+			return false;
 	}
 	for (it = server._allowed_methods.begin(); it != server._allowed_methods.end(); it++)
 	{
 		if (*it == request.getMethod())
-			return;
+			return false;
 	}
-	request.setIsBadRequest(std::make_pair(true, 405));
-	// std::cout << "ERROR 405 !!" << request.getIsBadRequest().first << " | " << request.getIsBadRequest().second << std::endl;
+	msg = errRespone(405, status_code, server._locations[pos_loc], server);
+	write(clientFd, msg.c_str(), msg.size());
+	return true;
 }
 
 void handling_upload(std::string request_file_name, std::string upload_path)
@@ -306,16 +331,15 @@ std::string	 handling_auto_index(std::string current_path, std::string root)
 
 void	HttpServer::_responseServer(int clientFd, int i)
 {
-	// _selectUtility.getRequest(clientFd).handling_response_errors();
-	// _handling_method_allowed_error(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()]);
-
-	// ----------------------------------
-	if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
-		_handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
-	else if (_selectUtility.getRequest(clientFd).getMethod() == "POST")
-		_handlePost(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
-	else if (_selectUtility.getRequest(clientFd).getMethod() == "DELETE")
-		_handleDelete(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
+	if (!_handlingErros_AndRediect(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd))
+	{
+		if (_selectUtility.getRequest(clientFd).getMethod() == "GET")
+			_handleGetMethod(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
+		else if (_selectUtility.getRequest(clientFd).getMethod() == "POST")
+			_handlePost(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
+		else if (_selectUtility.getRequest(clientFd).getMethod() == "DELETE")
+			_handleDelete(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
+	}
 	FD_CLR(clientFd, &_selectUtility._master);
 	close(clientFd);
 	_clientsSock.erase(_clientsSock.begin() + i);
@@ -349,7 +373,7 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 		{
 			if (!(buf.st_mode & S_IREAD))
 			{
-				msg = errRespone(403, status_code);
+				msg = errRespone(403, status_code, server._locations[i], server);
 				write(clientFd, msg.c_str(), msg.size());
 			}
 			else if (buf.st_mode & S_IFDIR) // if path is directory
@@ -385,7 +409,7 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 						}
 						else
 						{
-							msg = errRespone(403, status_code);
+							msg = errRespone(403, status_code, server._locations[i], server);
 							write(clientFd, msg.c_str(), msg.size());
 						}
 					}
@@ -396,7 +420,7 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, indexPath);
 							if (obj.executecgi())
 							{
-								msg = errRespone(403, status_code);
+								msg = errRespone(403, status_code, server._locations[i], server);
 								write(clientFd, msg.c_str(), msg.size());
 								return ;
 							}
@@ -422,7 +446,7 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 						cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 						if (obj.executecgi())
 						{
-							msg = errRespone(403, status_code);
+							msg = errRespone(403, status_code, server._locations[i], server);
 							write(clientFd, msg.c_str(), msg.size());
 							return ;
 						}
@@ -437,14 +461,14 @@ void	HttpServer::_handleGetMethod(ReadRequest request, Vserver &server, int clie
 				}
 				else
 				{
-					msg = errRespone(403, status_code);
+					msg = errRespone(403, status_code, server._locations[i], server);
 					write(clientFd, msg.c_str(), msg.size());
 				}
 			}
 		}
 		else
 		{
-			msg = errRespone(404, status_code);
+			msg = errRespone(404, status_code, server._locations[i], server);
 			write(clientFd, msg.c_str(), msg.size());
 		}
 	}
@@ -470,7 +494,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 	off_t size = buf.st_size;
 	if ((size / 1000000) > bodySize || (bodySize == (size / 1000000) && (size % 1000000)))
 	{
-		msg = errRespone(413, status_code);
+		msg = errRespone(413, status_code, server._locations[i], server);
 		write(clientFd, msg.c_str(), msg.size());
 		return ;
 	}
@@ -508,7 +532,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 			}
 			else
 			{
-				msg = errRespone(403, status_code);
+				msg = errRespone(403, status_code, server._locations[i], server);
 				write(clientFd, msg.c_str(), msg.size());
 			}
 		}
@@ -543,7 +567,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 							if (obj.executecgi())
 							{
-								msg = errRespone(403, status_code);
+								msg = errRespone(403, status_code, server._locations[i], server);
 								write(clientFd, msg.c_str(), msg.size());
 								return ;
 							}
@@ -552,7 +576,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 							return ;
 						}
 					}
-					msg = errRespone(403, status_code);
+					msg = errRespone(403, status_code, server._locations[i], server);
 					write(clientFd, msg.c_str(), msg.size());
 				}
 				else // if path is a file
@@ -566,7 +590,7 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 							if (obj.executecgi())
 							{
-								msg = errRespone(403, status_code);
+								msg = errRespone(403, status_code, server._locations[i], server);
 								write(clientFd, msg.c_str(), msg.size());
 								return ;
 							}
@@ -575,13 +599,13 @@ void	HttpServer::_handlePost(ReadRequest request, Vserver &server, int clientFd)
 							return ;
 						}
 					}
-					msg = errRespone(403, status_code);
+					msg = errRespone(403, status_code, server._locations[i], server);
 					write(clientFd, msg.c_str(), msg.size());
 				}
 			}
 			else
 			{
-				msg = errRespone(404, status_code);
+				msg = errRespone(404, status_code, server._locations[i], server);
 				write(clientFd, msg.c_str(), msg.size());
 			}
 		}
@@ -617,7 +641,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 			{
 				if (rootAndUri[rootAndUri.size() -1] != '/')
 				{
-					msg = errRespone(409, status_code);
+					msg = errRespone(409, status_code, server._locations[i], server);
 					write(clientFd, msg.c_str(), msg.size());
 				}
 				else
@@ -647,7 +671,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 							cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 							if (obj.executecgi())
 							{
-								msg = errRespone(403, status_code);
+								msg = errRespone(403, status_code, server._locations[i], server);
 								write(clientFd, msg.c_str(), msg.size());
 								return ;
 							}
@@ -656,7 +680,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 						}
 						else
 						{
-							msg = errRespone(403, status_code);
+							msg = errRespone(403, status_code, server._locations[i], server);
 							write(clientFd, msg.c_str(), msg.size());
 						}
 					}
@@ -664,7 +688,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 					{
 						if (deleteFiles(rootAndUri, false))
 						{
-							msg = errRespone(500, status_code);
+							msg = errRespone(500, status_code, server._locations[i], server);
 							write(clientFd, msg.c_str(), msg.size());
 							return ;
 						}
@@ -681,7 +705,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 					cgi obj(request, server._locations[i]._cgi[extension], clientFd, rootAndUri);
 					if (obj.executecgi())
 					{
-						msg = errRespone(403, status_code);
+						msg = errRespone(403, status_code, server._locations[i], server);
 						write(clientFd, msg.c_str(), msg.size());
 						return ;
 					}
@@ -692,7 +716,7 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 				{
 					if (deleteFiles(rootAndUri, false))
 					{
-						msg = errRespone(500, status_code);
+						msg = errRespone(500, status_code, server._locations[i], server);
 						write(clientFd, msg.c_str(), msg.size());
 						return ;
 					}
@@ -701,13 +725,13 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 			}
 			else
 			{
-				msg = errRespone(403, status_code);
+				msg = errRespone(403, status_code, server._locations[i], server);
 				write(clientFd, msg.c_str(), msg.size());
 			}
 		}
 		else
 		{
-			msg = errRespone(404, status_code);
+			msg = errRespone(404, status_code, server._locations[i], server);
 			write(clientFd, msg.c_str(), msg.size());
 		}
 	}

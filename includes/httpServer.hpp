@@ -27,7 +27,6 @@ class HttpServer
 		std::vector<Socket>				_serverSock;
 		std::vector<Socket>				_clientsSock;
 		ServerRequest					_selectUtility;
-		// ServerResponse					_response;
 
 		//methods
 		void	_loadServers(void);
@@ -37,7 +36,7 @@ class HttpServer
 		void	_handlePost(ReadRequest request, Vserver &server, int clientFd);
 		void	_handleDelete(ReadRequest request, Vserver &server, int clientFd);
 		void	_responseServer(int clientFd, int i);
-		void	_handling_method_allowed_error(ReadRequest &request, Vserver &server);
+		bool	_handlingErros_AndRediect(ReadRequest &request, Vserver &server, int clientFd);
 	public:
 		HttpServer(const std::vector<Vserver> &servers);
 		~HttpServer();

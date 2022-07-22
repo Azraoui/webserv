@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   serverRequest.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yer-raki <yer-raki@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 11:49:04 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/06 15:29:16 by yer-raki         ###   ########.fr       */
+/*   Updated: 2022/07/22 23:50:47 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ bool	ServerRequest::readData(int fd)
 		return (false);
 	}
 	_readRequest[fd].parsing(buffer, fd, recv_ret);
+	
 	return (true);
 }
 

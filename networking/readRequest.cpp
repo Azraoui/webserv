@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+        */
+/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/22 18:52:12 by alhamdolila      ###   ########.fr       */
+/*   Updated: 2022/07/22 23:49:51 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	ReadRequest::_parseHeader(void)
 		{
 			if (vtmp.size() != 3)
 			{
-				std::cerr << "bad request\n" << std::endl;
+				setIsBadRequest(std::make_pair(true, 400));
 				return ;
 			}
 			_method = vtmp[0];
@@ -83,7 +83,7 @@ void	ReadRequest::_parseHeader(void)
 			{
 				if (vtmp.size() != 2)
 				{
-					std::cerr << "bad request\n" << std::endl;
+					setIsBadRequest(std::make_pair(true, 400));
 					return ;
 				}
 				_host = vtmp[1].substr(0, vtmp[1].find(":"));
@@ -216,20 +216,22 @@ void	ReadRequest::handling_response_errors()
 {
 	// std::cout << "------------------------------" << std::endl;
 	std::size_t found = _uriPath.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%");
-	if (found!=std::string::npos)
+	if (!_is_bad_request.first)
 	{
-		_is_bad_request.first = true;
-		_is_bad_request.second = 400;
+		if (found!=std::string::npos)
+		{
+			_is_bad_request.first = true;
+			_is_bad_request.second = 400;
+		}
+		else if (!_isChunked && !_bodyFileLength && _method == "POST")
+		{
+			_is_bad_request.first = true;
+			_is_bad_request.second = 400;
+		}
+		else if (_uriPath.length() > 2048)
+		{
+			_is_bad_request.first = true;
+			_is_bad_request.second = 414;
+		}
 	}
-	if (!_isChunked && !_bodyFileLength && _method == "POST")
-	{
-		_is_bad_request.first = true;
-		_is_bad_request.second = 400;
-	}
-	if (_uriPath.length() > 2048)
-	{
-		_is_bad_request.first = true;
-		_is_bad_request.second = 414;
-	}
-	
 }

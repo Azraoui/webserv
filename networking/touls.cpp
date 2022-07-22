@@ -59,12 +59,46 @@ int	matchLocationAndUri(std::vector<Location> location, std::string uriPath)
 	return index;
 }
 
-std::string errRespone(int err, std::map<int, std::string> errs)
+std::string errRespone(int err, std::map<int, std::string> errs, Location &location, Vserver &server)
 {
+	struct stat	buf;
+	std::string body;
+	std::string contentLength;
+	if (!location._errorPage[std::to_string(err)].empty() && !lstat(location._errorPage[std::to_string(err)].c_str(), &buf))
+	{
+		std::string path = location._errorPage[std::to_string(err)];
+		if (!(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
+		{
+			readFileIntoString(path, &body);
+			contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
+		}
+		else
+		{
+			body = "\n" + errorPage(std::to_string(err), errs[err]);
+			contentLength = "Content-Length: " + std::to_string(errorPage(std::to_string(err), errs[err]).size()) + "\n";
+		}
+	}
+	else if (!server._errorPage[std::to_string(err)].empty() && !lstat(server._errorPage[std::to_string(err)].c_str(), &buf))
+	{
+		std::string path = server._errorPage[std::to_string(err)];
+		if (!(buf.st_mode & S_IFDIR) && (buf.st_mode & S_IREAD))
+		{
+			readFileIntoString(path, &body);
+			contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
+		}
+		else
+		{
+			body = "\n" + errorPage(std::to_string(err), errs[err]);
+			contentLength = "Content-Length: " + std::to_string(errorPage(std::to_string(err), errs[err]).size()) + "\n";
+		}
+	}
+	else
+	{
+		body = "\n" + errorPage(std::to_string(err), errs[err]);
+		contentLength = "Content-Length: " + std::to_string(errorPage(std::to_string(err), errs[err]).size()) + "\n";
+	}
 	std::string firstLine = "HTTP/1.1 " + std::to_string(err) + " " + errs[err] + "\n";
 	std::string contentType = "Content-Type: text/html\n";
-	std::string contentLength = "Content-Length: " + std::to_string(errorPage(std::to_string(err), errs[err]).size()) + "\n";
-	std::string body = "\n" + errorPage(std::to_string(err), errs[err]);
 	return firstLine + contentType + contentLength + body;
 }
 

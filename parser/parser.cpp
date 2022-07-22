@@ -6,13 +6,11 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:00:33 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/20 23:01:56 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/22 20:41:32 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/parser.hpp"
-
-
 
 void	printVserver(std::vector<Vserver> const &v)
 {
@@ -29,8 +27,6 @@ void	printVserver(std::vector<Vserver> const &v)
 		std::cout << std::endl;
 		std::cout << "redirection = " << v[i]._redirection.first << " "<< v[i]._redirection.second << std::endl;
 		std::cout << "error_page = " << std::endl;
-		for (std::set<std::pair<std::string, std::string> >::iterator j = v[i]._errorPage.begin(); j != v[i]._errorPage.end(); ++j)
-			std::cout << j->first << " " << j->second << std::endl;
 	}
 }
 
