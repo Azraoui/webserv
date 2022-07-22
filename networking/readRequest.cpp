@@ -6,7 +6,7 @@
 /*   By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/22 17:10:38 by alhamdolila      ###   ########.fr       */
+/*   Updated: 2022/07/22 18:52:12 by alhamdolila      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
 	_is_bad_request.first = false;
+	_cookies = "";
 }
 
 ReadRequest::~ReadRequest(){
@@ -37,6 +38,7 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 	this->_statusCode = obj._statusCode;
 	this->_is_bad_request.first = false;
 	this->_requestFileName = obj._requestFileName;
+	this->_cookies = obj._cookies;
 }
 
 // methods
@@ -101,6 +103,14 @@ void	ReadRequest::_parseHeader(void)
 			{
 				if (vtmp.size() > 1)
 					_contentType = vtmp[1];
+			}
+			else if (vtmp[0] == "Cookie:")
+			{
+				if (vtmp.size() > 1)
+				{
+					for (size_t i = 1; i < vtmp.size(); i++)
+						_cookies.append(vtmp[i]);
+				}
 			}
 		}
 		start = end + 1;

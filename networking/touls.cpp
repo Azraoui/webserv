@@ -139,13 +139,20 @@ std::string	responseCgi(std::string cgiFilePath)
 	std::string	ret;
 	std::string bodyContent;
 	std::string tmp;
+	std::string header;
 
 	readFileIntoString(cgiFilePath, &tmp);
-	if (tmp.find("\n\n") != tmp.npos)
-		bodyContent = tmp.substr(bodyContent.find_first_of("\n\n") + 2);
 	firstLine = "HTTP/1.1 200 OK\n";
+	header = firstLine;
+	if (tmp.find("\n\n") != tmp.npos)
+	{
+		header.append(tmp.substr(0, tmp.find("\n\n")));
+		bodyContent = tmp.substr(tmp.find("\n\n") + 2);
+	}
 	contentType = "Content-Type: text/html\n";
 	contentLength = "Content-Length: " + std::to_string(bodyContent.size()) + "\n\n";
-	ret = firstLine + contentType + bodyContent;
+	header.append(contentType);
+	header.append(contentLength);
+	ret = header + bodyContent;
 	return ret;
 }

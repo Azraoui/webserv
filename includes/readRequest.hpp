@@ -18,6 +18,7 @@ class ReadRequest
 		std::string                         _method;
 		std::string                         _uriPath;
 		std::string                         _version;
+		std::string							_cookies;
 		bool								_connection;
 		std::string							_contentType;
 		std::map<std::string, std::string>  _headerDirectives;
