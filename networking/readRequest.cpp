@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alhamdolilah <alhamdolilah@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/21 12:01:26 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/22 17:10:38 by alhamdolila      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,13 @@ void	ReadRequest::_parseHeader(void)
 				return ;
 			}
 			_method = vtmp[0];
-			_uriPath = vtmp[1];
+			if (vtmp[1].find("?") == vtmp[1].npos)
+				_uriPath = vtmp[1];
+			else
+			{
+				_queryParams = vtmp[1].substr(vtmp[1].find("?") + 1);
+				_uriPath = vtmp[1].substr(0, vtmp[1].find("?"));
+			}
 		}
 		else
 		{

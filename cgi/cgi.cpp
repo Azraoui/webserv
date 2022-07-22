@@ -16,10 +16,9 @@ cgi::cgi(ReadRequest request, std::string cgiPath, int fd, std::string path): _c
     // bedel dak path li generiti b _cgiPath
     this->request = request;
     // std::string path = request.getUriPath();
-    std::vector<std::string> query;
-    query = split(_path, '?');
-    query_params = query[query.size() - 1];
-    file = query[0];
+
+    query_params = request.getQueryParams();
+    file = path;
     cgi_error = 0;
     _outputfile = concat("file_", _fd);
     setenvcgi();
