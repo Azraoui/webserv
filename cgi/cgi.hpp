@@ -35,6 +35,7 @@ class cgi
         std::string file;
         int         cgi_error;
         std::string query_params;
+        char **metaTest;
                 
         cgi(ReadRequest request, std::string cgiPath, int fd, std::string path);
         ~cgi();

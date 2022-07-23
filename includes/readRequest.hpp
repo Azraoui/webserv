@@ -51,7 +51,10 @@ class ReadRequest
 		std::string &getHost() {
 			return _host;
 		};
-
+		std::string	&getCookies()
+		{
+			return this->_cookies;
+		};
 		bool	getConnection(void) const;
 		size_t getPort() {
 			return _port;

@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/22 23:49:51 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/23 10:55:59 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ ReadRequest::ReadRequest(ReadRequest const &obj)
 	this->_is_bad_request.first = false;
 	this->_requestFileName = obj._requestFileName;
 	this->_cookies = obj._cookies;
+	this->_contentType = obj._contentType;
 }
 
 // methods
@@ -102,14 +103,23 @@ void	ReadRequest::_parseHeader(void)
 			else if (vtmp[0] == "Content-Type:")
 			{
 				if (vtmp.size() > 1)
-					_contentType = vtmp[1];
+				{
+					for (size_t i = 1; i < vtmp.size(); i++)
+					{
+						_contentType.append(vtmp[i]);
+						_contentType += " ";
+					}
+				}
 			}
 			else if (vtmp[0] == "Cookie:")
 			{
 				if (vtmp.size() > 1)
 				{
 					for (size_t i = 1; i < vtmp.size(); i++)
+					{
 						_cookies.append(vtmp[i]);
+						// _cookies.append(" ");
+					}
 				}
 			}
 		}

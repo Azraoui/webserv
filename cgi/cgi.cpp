@@ -27,14 +27,18 @@ cgi::cgi(ReadRequest request, std::string cgiPath, int fd, std::string path): _c
 
 void    cgi::setenvcgi(void)
 {
+    std::cout << "\n***akhastaf ----\n\ncontentType = " + request.getRequestFileName() << std::endl;
+    setenv("SERVER_SOFTWARE","webserv", 1);
     setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
-	setenv("SERVER_SOFTWARE", "Webserv", 1);
 	setenv("REDIRECT_STATUS", "200", 1);
     setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
     setenv("SCRIPT_FILENAME", file.c_str() , 1);
     setenv("SERVER_PORT", std::to_string(request.getPort()).c_str(),1);
 	setenv("SERVER_NAME", request.getHost().c_str(),1);
+    setenv("HTTP_COOKIE",request.getCookies().c_str(),1);
+    setenv("PATH_INFO", request.getUriPath().c_str(), 1);
+    setenv("PATH_TRANSLATED", "", 1);
     if (request.getMethod() == "GET")
     {
         setenv("QUERY_STRING", query_params.c_str(), 1);
@@ -46,7 +50,6 @@ void    cgi::setenvcgi(void)
     }
     args[0] = (char*)_cgiPath.c_str();
 	args[1] = (char*)file.c_str();
-    //args[1] = (char*)"cgi/index.php";
     args[2] = NULL;
     fd_output = open(_outputfile.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0666);
     fd_input = open(request.getRequestFileName().c_str(), O_RDONLY);
