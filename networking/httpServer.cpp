@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/23 12:22:57 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/23 16:15:09 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,6 +340,7 @@ void	HttpServer::_responseServer(int clientFd, int i)
 		else if (_selectUtility.getRequest(clientFd).getMethod() == "DELETE")
 			_handleDelete(_selectUtility.getRequest(clientFd), _servers[_clientsSock[i].getServerPosition()], clientFd);
 	}
+	system(("rm -f " + _selectUtility.getRequest(clientFd).getRequestFileName()).c_str());
 	FD_CLR(clientFd, &_selectUtility._master);
 	close(clientFd);
 	_clientsSock.erase(_clientsSock.begin() + i);

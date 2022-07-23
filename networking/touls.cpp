@@ -182,5 +182,6 @@ std::string	responseCgi(std::string cgiFilePath)
 	header.append(contentType);
 	header.append(contentLength);
 	ret = header + bodyContent;
+	system(("rm -f " + cgiFilePath).c_str());
 	return ret;
 }
