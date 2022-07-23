@@ -3,3 +3,8 @@ make: Entering directory `/Users/ael-azra/Desktop/webserv'
 c++ -Wall -Wextra -Werror -std=c++98 ./main.cpp ./parser/parser.cpp ./networking/httpServer.cpp ./networking/socket.cpp ./networking/serverRequest.cpp ./networking/readRequest.cpp ./networking/touls.cpp ./networking/serverResponse.cpp ./cgi/cgi.cpp -o webserv
 make: Leaving directory `/Users/ael-azra/Desktop/webserv'
  
+make: Entering directory `/Users/ael-azra/Desktop/webserv'
+c++ -Wall -Wextra -Werror -std=c++98 ./main.cpp ./parser/parser.cpp ./networking/httpServer.cpp ./networking/socket.cpp ./networking/serverRequest.cpp ./networking/readRequest.cpp ./networking/touls.cpp ./networking/serverResponse.cpp ./cgi/cgi.cpp -o webserv
+ 
+make: Leaving directory `/Users/ael-azra/Desktop/webserv'
+ 

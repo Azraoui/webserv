@@ -6,7 +6,7 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 10:51:22 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/23 16:15:09 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/23 18:37:55 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -687,9 +687,10 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 					}
 					else // Delete all folder content
 					{
-						if (deleteFiles(rootAndUri, false))
+						int ret = deleteFiles(rootAndUri, true);
+						if (ret)
 						{
-							msg = errRespone(500, status_code, server._locations[i], server);
+							msg = errRespone(ret, status_code, server._locations[i], server);
 							write(clientFd, msg.c_str(), msg.size());
 							return ;
 						}
@@ -715,9 +716,10 @@ void	HttpServer::_handleDelete(ReadRequest request, Vserver &server, int clientF
 				}
 				else // delete file
 				{
-					if (deleteFiles(rootAndUri, false))
+					int ret = deleteFiles(rootAndUri, false);
+					if (ret)
 					{
-						msg = errRespone(500, status_code, server._locations[i], server);
+						msg = errRespone(ret, status_code, server._locations[i], server);
 						write(clientFd, msg.c_str(), msg.size());
 						return ;
 					}

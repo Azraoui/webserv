@@ -146,16 +146,68 @@ void	readFileIntoString(const std::string& path, std::string *fileContent) {
 	input_file.close();
 }
 
-int	deleteFiles(const std::string &path, bool directory)
+// int	deleteFiles(const std::string &path, bool directory)
+// {
+// 	std::cout << "i was here " << directory << std::endl;
+// 	if (directory)
+// 	{
+// 		int i = system(("rm -rf " + path + "*").c_str());
+// 		i = WEXITSTATUS(i);
+// 		std::cout << " i = " << i << std::endl;
+// 		if (i != 1)
+// 			return 0;
+// 	}
+// 	else if (system(("rm -rf " + path).c_str()) != -1)
+// 		return 0;
+// 	return 1;
+// }
+
+int    deleteFiles(std::string path, bool isDir)
 {
-	if (directory)
+    DIR *dir = NULL;
+    struct stat s;
+    struct dirent *dirIterator;
+    std::string filePath;
+	std::cout << "here " << std::endl;
+	if (!isDir)
 	{
-		if (system(("rm -rf " + path + "*").c_str()))
-			return 0;
-	}
-	else if (system(("rm -rf " + path).c_str()))
+		if (unlink(path.c_str()) < 0)
+        {
+            if (errno == EACCES)
+                return 403;
+            else if (errno == EEXIST)
+                return 500;
+        }
 		return 0;
-	return 1;
+	}
+    dir = opendir(path.c_str());
+    if (!dir)
+        return 500;
+    while ((dirIterator = readdir(dir)) != NULL)
+    {
+        if (!strcmp(dirIterator->d_name, ".") || !strcmp(dirIterator->d_name, ".."))
+            continue;
+        filePath = path + dirIterator->d_name;
+        if (stat(filePath.c_str(), &s) < 0)
+            return 500; 
+        if (S_ISDIR(s.st_mode))
+        {
+            deleteFiles(filePath + "/", true);
+            continue;
+                
+        }
+        if (unlink(filePath.c_str()) < 0)
+        {
+            if (errno == EACCES)
+                return 403;
+            else if (errno == EEXIST)
+                return 500;
+        }
+    }
+    if (rmdir(path.c_str()) < 0)
+        return 500;
+    closedir(dir);
+	return 0;
 }
 
 std::string	responseCgi(std::string cgiFilePath)
