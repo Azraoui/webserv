@@ -1,9 +1,7 @@
 
 <?php
 
-session_start();
-$_SESSION["test"] = "tets";
-$value = 'value_test';
+// Show all information, defaults to INFO_ALL
+phpinfo();
 
-setcookie("cookie_test", $value, time() + 3600);
 ?>
