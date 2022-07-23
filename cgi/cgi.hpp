@@ -14,6 +14,7 @@
 #include <sys/wait.h>
 #include "../includes/readRequest.hpp"
 #include "../includes/parser.hpp"
+#include "../includes/touls.hpp"
 
 extern char **environ;
 

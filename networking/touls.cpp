@@ -114,14 +114,7 @@ std::string sendGetResponse(std::string indexPath, std::string contentType)
 	std::string body;
 	std::string firstLine = "HTTP/1.1 200 OK\n";
 	std::string _contentType = "Content-Type: " + contentType + "\n";
-	std::ifstream file;
-	file.open(indexPath);
-	std::string tmp;
-	while(!file.eof())
-	{
-		file >> tmp;
-		body.append(tmp);
-	}
+	readFileIntoString(indexPath, &body);
 	std::string contentLength = "Content-Length: " + std::to_string(body.size()) + "\n\n";
 	return firstLine + _contentType + contentLength + body;
 }
@@ -189,7 +182,5 @@ std::string	responseCgi(std::string cgiFilePath)
 	header.append(contentType);
 	header.append(contentLength);
 	ret = header + bodyContent;
-	std::cout << "\n\n-------------\n\n";
-	std::cout << ret << std::endl;
 	return ret;
 }

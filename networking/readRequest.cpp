@@ -6,16 +6,17 @@
 /*   By: ael-azra <ael-azra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 16:38:42 by ael-azra          #+#    #+#             */
-/*   Updated: 2022/07/23 10:55:59 by ael-azra         ###   ########.fr       */
+/*   Updated: 2022/07/23 15:49:36 by ael-azra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/readRequest.hpp"
 
 
-ReadRequest::ReadRequest():_connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
+ReadRequest::ReadRequest():  _connection(false), _bodyFileLength(0), _isRequestFinished(false), _isChunked(false), _requestContent(""), _chunkSize(0), _chunkContent(""){
 	_is_bad_request.first = false;
 	_cookies = "";
+	_contentType = "";
 }
 
 ReadRequest::~ReadRequest(){
@@ -57,6 +58,8 @@ void	ReadRequest::_parseHeader(void)
 	while (end != _header.npos)
 	{
 		stmp = _header.substr(start, end - start);
+		if (stmp.find("\r") != stmp.npos)
+			stmp.erase(stmp.find("\r"));
 		vtmp = split(stmp, ' ');
 		if (start == 0)
 		{
@@ -106,8 +109,8 @@ void	ReadRequest::_parseHeader(void)
 				{
 					for (size_t i = 1; i < vtmp.size(); i++)
 					{
-						_contentType.append(vtmp[i]);
-						_contentType += " ";
+						_contentType += vtmp[i];
+						// _contentType += " ";
 					}
 				}
 			}
@@ -148,8 +151,6 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		_header.append(_requestContent.substr(0, _requestContent.find("\r\n\r\n")));
 		_requestContent.erase(0, _requestContent.find("\r\n\r\n") + 4);
 		_parseHeader();
-		std::cout << _header << std::endl;
-		std::cout << "\n------------------------------\n"; // remove me and and line before me
 	}
 	if (!_requestContent.empty() && _isChunked && _bodyFileLength > 0)
 	{
@@ -192,6 +193,12 @@ void	ReadRequest::parsing(char *content, int fd, ssize_t contentSize)
 		write(readFd, _requestContent.c_str(), _requestContent.size());
 	off_t size;
 	size = lseek(readFd, 0, SEEK_END);
+	if (((unsigned long)size > _bodyFileLength))
+	{
+		setIsBadRequest(std::make_pair(true, 400));
+		close(readFd);
+		return;
+	}
 	if (((unsigned long)size == _bodyFileLength) || !_bodyFileLength)
 		_isRequestFinished = true;
 	close(readFd);
@@ -224,7 +231,6 @@ std::string		ReadRequest::getContentType(void) const {
 
 void	ReadRequest::handling_response_errors()
 {
-	// std::cout << "------------------------------" << std::endl;
 	std::size_t found = _uriPath.find_first_not_of("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%");
 	if (!_is_bad_request.first)
 	{

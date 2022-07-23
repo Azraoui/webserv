@@ -4,12 +4,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // save $_FILES['avatar'] to a inside a folder
 
-   
-    $_COOKIE['name'] = $_POST['name'];
-    $_COOKIE['email'] = $_POST['email'];
+   $_COOKIE['name'] = $_POST['name'];
+   $_COOKIE['email'] = $_POST['email'];
+//    echo $_POST;
     setcookie('name', $_POST['name'], time() + 3600 * 24 * 7);
     setcookie('email', $_POST['email'], time() + 3600 * 24 * 7);
-
+    // echo $_ENV('CONTENT_TYPE');
+    // echo $_ENV('CONTENT_LENGTH');
+    
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['logout'])) {
     unset($_COOKIE['name']);
     unset($_COOKIE['email']);
